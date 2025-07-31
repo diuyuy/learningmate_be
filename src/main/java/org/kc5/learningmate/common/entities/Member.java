@@ -14,7 +14,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-public class User {
+public class Member {
     @Id
     @Column(name = "id", columnDefinition = "int UNSIGNED not null")
     private Long id;

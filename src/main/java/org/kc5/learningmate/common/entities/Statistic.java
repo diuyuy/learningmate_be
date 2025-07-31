@@ -18,7 +18,7 @@ public class Statistic {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Member member;
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
