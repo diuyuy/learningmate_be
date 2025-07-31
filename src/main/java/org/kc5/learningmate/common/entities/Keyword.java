@@ -5,17 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
-@Setter
 @Entity
-public class Keyword {
-    @Id
-    @Column(name = "id", columnDefinition = "int UNSIGNED not null")
-    private Long id;
-
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+public class Keyword extends BaseEntity {
     @Size(max = 80)
     @NotNull
     @Column(name = "name", nullable = false, length = 80)

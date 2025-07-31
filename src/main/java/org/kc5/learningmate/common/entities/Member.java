@@ -5,20 +5,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
 
 @Getter
-@Setter
 @Entity
-public class Member {
-    @Id
-    @Column(name = "id", columnDefinition = "int UNSIGNED not null")
-    private Long id;
-
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+public class Member extends  BaseEntity {
     @Size(max = 255)
     @NotNull
     @Column(name = "email", nullable = false)
@@ -36,15 +33,5 @@ public class Member {
     @Size(max = 255)
     @Column(name = "image_url")
     private String imageUrl;
-
-    @NotNull
-    @ColumnDefault("(now())")
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
-
-    @NotNull
-    @ColumnDefault("(now())")
-    @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
 
 }

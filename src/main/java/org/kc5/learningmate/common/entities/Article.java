@@ -3,21 +3,18 @@ package org.kc5.learningmate.common.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @Entity
-public class Article {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", columnDefinition = "int UNSIGNED not null")
-    private Long id;
-
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+public class Article extends  BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "keyword_id", nullable = false)
@@ -45,7 +42,7 @@ public class Article {
 
     @NotNull
     @Column(name = "published_at", nullable = false)
-    private Instant publishedAt;
+    private LocalDateTime publishedAt;
 
     @Size(max = 50)
     @NotNull
@@ -64,15 +61,4 @@ public class Article {
     @ColumnDefault("'0'")
     @Column(name = "scrap_count", columnDefinition = "int UNSIGNED not null")
     private Long scrapCount;
-
-    @NotNull
-    @ColumnDefault("(now())")
-    @Column(name = "created_at", nullable = false)
-    private Instant createdAt;
-
-    @NotNull
-    @ColumnDefault("(now())")
-    @Column(name = "updated_at", nullable = false)
-    private Instant updatedAt;
-
 }
