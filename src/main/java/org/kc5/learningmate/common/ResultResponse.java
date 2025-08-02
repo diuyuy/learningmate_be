@@ -1,4 +1,4 @@
-package org.kc5.learningmate.common.exception;
+package org.kc5.learningmate.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
@@ -15,7 +15,6 @@ public class ResultResponse<T> implements Serializable {
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T result;
-
 
     public ResultResponse(HttpStatus status, String message) {
         this.status = status.value();

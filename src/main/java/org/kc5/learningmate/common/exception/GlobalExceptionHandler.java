@@ -2,6 +2,7 @@ package org.kc5.learningmate.common.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.kc5.learningmate.common.ResultResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -27,7 +28,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ResultResponse<Void>> unhandledException(Exception e, HttpServletRequest request) {
-        log.error("error occur {}", request.getRequestURI());
+        log.error("error occur {}", request.getRequestURI(), e);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ResultResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));
     }
