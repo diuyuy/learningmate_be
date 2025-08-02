@@ -5,5 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Repository
-public class StudyService {
+public class StatisticService {
 }
