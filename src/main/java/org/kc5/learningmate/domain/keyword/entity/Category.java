@@ -1,4 +1,4 @@
-package org.kc5.learningmate.domain.keyword.domain;
+package org.kc5.learningmate.domain.keyword.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

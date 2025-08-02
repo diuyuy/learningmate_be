@@ -1,4 +1,4 @@
-package org.kc5.learningmate.domain.exception;
+package org.kc5.learningmate.common.exception;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package org.kc5.learningmate.common.entities;
+package org.kc5.learningmate.common;
 
 import jakarta.persistence.*;
 import lombok.Getter;

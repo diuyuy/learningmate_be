@@ -1,4 +1,4 @@
-package org.kc5.learningmate.domain.exception;
+package org.kc5.learningmate.common.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

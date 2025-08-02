@@ -1,4 +1,4 @@
-package org.kc5.learningmate.domain.article;
+package org.kc5.learningmate.domain.article.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.kc5.learningmate.common.BaseEntity;
-import org.kc5.learningmate.domain.keyword.domain.Keyword;
+import org.kc5.learningmate.domain.keyword.entity.Keyword;
 
 import java.time.LocalDateTime;
 

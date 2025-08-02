@@ -1,12 +1,12 @@
-package org.kc5.learningmate.domain.study;
+package org.kc5.learningmate.domain.study.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.kc5.learningmate.common.BaseEntity;
-import org.kc5.learningmate.domain.keyword.domain.Keyword;
-import org.kc5.learningmate.domain.member.Member;
+import org.kc5.learningmate.domain.keyword.entity.Keyword;
+import org.kc5.learningmate.domain.member.entity.Member;
 
 @Getter
 @Entity

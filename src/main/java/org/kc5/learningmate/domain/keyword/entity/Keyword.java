@@ -1,4 +1,4 @@
-package org.kc5.learningmate.domain.keyword.domain;
+package org.kc5.learningmate.domain.keyword.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
