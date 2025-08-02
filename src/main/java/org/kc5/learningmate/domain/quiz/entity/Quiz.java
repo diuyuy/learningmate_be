@@ -1,16 +1,18 @@
-package org.kc5.learningmate.common.entities;
+package org.kc5.learningmate.domain.quiz;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.kc5.learningmate.domain.article.Article;
+import org.kc5.learningmate.common.BaseEntity;
 
 @Getter
 @Entity
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Quiz extends  BaseEntity {
+public class Quiz extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "article_id", nullable = false)

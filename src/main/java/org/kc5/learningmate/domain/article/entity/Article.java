@@ -1,12 +1,13 @@
-package org.kc5.learningmate.common.entities;
+package org.kc5.learningmate.domain.article;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.kc5.learningmate.common.BaseEntity;
+import org.kc5.learningmate.domain.keyword.domain.Keyword;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Article extends  BaseEntity {
+public class Article extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "keyword_id", nullable = false)

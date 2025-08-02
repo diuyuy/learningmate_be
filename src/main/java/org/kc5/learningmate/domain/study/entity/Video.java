@@ -1,9 +1,11 @@
-package org.kc5.learningmate.common.entities;
+package org.kc5.learningmate.domain.study;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.kc5.learningmate.common.BaseEntity;
+import org.kc5.learningmate.domain.keyword.domain.Keyword;
 
 @Getter
 @Entity

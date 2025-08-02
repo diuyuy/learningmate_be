@@ -1,4 +1,4 @@
-package org.kc5.learningmate.common.exception;
+package org.kc5.learningmate.domain.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

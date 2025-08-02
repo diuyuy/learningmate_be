@@ -1,21 +1,18 @@
-package org.kc5.learningmate.common.entities;
+package org.kc5.learningmate.domain.review;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-
-import java.time.Instant;
+import org.kc5.learningmate.common.BaseEntity;
 
 @Getter
 @Entity
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Review extends  BaseEntity {
+public class Review extends BaseEntity {
     @NotNull
     @Lob
     @Column(name = "content_1", nullable = false)

@@ -1,21 +1,18 @@
-package org.kc5.learningmate.common.entities;
+package org.kc5.learningmate.domain.member;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
-
-import java.time.Instant;
+import org.kc5.learningmate.common.BaseEntity;
 
 @Getter
 @Entity
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Member extends  BaseEntity {
+public class Member extends BaseEntity {
     @Size(max = 255)
     @NotNull
     @Column(name = "email", nullable = false)

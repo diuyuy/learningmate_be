@@ -1,8 +1,9 @@
-package org.kc5.learningmate.common.entities;
+package org.kc5.learningmate.domain.keyword.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.kc5.learningmate.common.BaseEntity;
 
 import java.time.LocalDate;
 
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class TodaysKeyword extends  BaseEntity {
+public class TodaysKeyword extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "keyword_id", nullable = false)

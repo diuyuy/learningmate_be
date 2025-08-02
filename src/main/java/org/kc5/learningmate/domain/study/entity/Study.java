@@ -1,18 +1,19 @@
-package org.kc5.learningmate.common.entities;
+package org.kc5.learningmate.domain.study;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
-
-import java.time.Instant;
+import org.kc5.learningmate.common.BaseEntity;
+import org.kc5.learningmate.domain.keyword.domain.Keyword;
+import org.kc5.learningmate.domain.member.Member;
 
 @Getter
 @Entity
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Study extends  BaseEntity {
+public class Study extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private Member member;
