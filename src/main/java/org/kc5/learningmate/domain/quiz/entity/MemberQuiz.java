@@ -12,7 +12,7 @@ import org.kc5.learningmate.domain.member.entity.Member;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserQuiz extends BaseEntity {
+public class MemberQuiz extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "quiz_id", nullable = false)
@@ -20,12 +20,12 @@ public class UserQuiz extends BaseEntity {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @Size(max = 1)
     @NotNull
-    @Column(name = "user_answer", nullable = false, length = 1)
-    private String userAnswer;
+    @Column(name = "member_answer", nullable = false, length = 1)
+    private String memberAnswer;
 
 }

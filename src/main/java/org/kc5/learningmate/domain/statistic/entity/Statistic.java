@@ -16,7 +16,7 @@ import org.kc5.learningmate.domain.member.entity.Member;
 public class Statistic extends BaseEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @NotNull
@@ -25,7 +25,7 @@ public class Statistic extends BaseEntity {
     private Category category;
 
     @ColumnDefault("'0'")
-    @Column(name = "study_count", columnDefinition = "int UNSIGNED not null")
+    @Column(name = "study_count")
     private Long studyCount;
 
 }
