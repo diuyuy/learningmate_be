@@ -13,18 +13,14 @@ import org.kc5.learningmate.domain.member.entity.Member;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class MemberQuiz extends BaseEntity {
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "quiz_id", nullable = false)
     private Quiz quiz;
 
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @Size(max = 1)
-    @NotNull
     @Column(name = "member_answer", nullable = false, length = 1)
     private String memberAnswer;
 

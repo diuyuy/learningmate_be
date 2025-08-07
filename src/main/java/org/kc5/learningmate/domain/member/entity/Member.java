@@ -2,9 +2,8 @@ package org.kc5.learningmate.domain.member.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 import org.kc5.learningmate.common.BaseEntity;
 
 @Getter
@@ -13,22 +12,20 @@ import org.kc5.learningmate.common.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Member extends BaseEntity {
-    @Size(max = 255)
-    @NotNull
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "nickname", nullable = false, length = 50)
+    @Column(name = "nickname", nullable = false, unique = true, length = 50)
     private String nickname;
 
-    @Size(max = 255)
-    @Column(name = "password_hash")
+    @Column(name = "password_hash", nullable = false, length = 60)
     private String passwordHash;
 
-    @Size(max = 255)
     @Column(name = "image_url")
     private String imageUrl;
+
+    @ColumnDefault("1")
+    @Column(nullable = false)
+    private Boolean status;
 
 }

@@ -19,18 +19,15 @@ public class Review extends BaseEntity {
     private Article article;
 
     @NotNull
-    @Lob
-    @Column(name = "content_1", nullable = false)
+    @Column(name = "content_1", nullable = false, length=2000)
     private String content1;
 
     @NotNull
-    @Lob
-    @Column(name = "content_2", nullable = false)
+    @Column(name = "content_2", nullable = false, length=2000)
     private String content2;
 
     @NotNull
-    @Lob
-    @Column(name = "content_3", nullable = false)
+    @Column(name = "content_3", nullable = false, length=2000)
     private String content3;
 
     @NotNull

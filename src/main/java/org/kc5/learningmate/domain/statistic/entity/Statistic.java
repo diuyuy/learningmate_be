@@ -25,7 +25,7 @@ public class Statistic extends BaseEntity {
     private Category category;
 
     @ColumnDefault("'0'")
-    @Column(name = "study_count")
+    @Column(name = "study_count", nullable = false)
     private Long studyCount;
 
 }

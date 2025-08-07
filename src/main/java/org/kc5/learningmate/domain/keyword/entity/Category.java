@@ -12,8 +12,6 @@ import org.kc5.learningmate.common.BaseEntity;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class Category extends BaseEntity {
-    @Size(max = 2)
-    @NotNull
     @Column(name = "name", nullable = false, length = 2)
     private String name;
 }

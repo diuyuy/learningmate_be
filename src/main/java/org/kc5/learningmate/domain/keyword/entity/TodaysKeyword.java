@@ -13,12 +13,10 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class TodaysKeyword extends BaseEntity {
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "keyword_id", nullable = false)
     private Keyword keyword;
 
-    @NotNull
     @Column(name = "date", nullable = false, unique = true)
     private LocalDate date;
 
