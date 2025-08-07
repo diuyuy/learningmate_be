@@ -29,7 +29,7 @@ public class Article extends BaseEntity {
 
     @NotNull
     @Lob
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @Size(max = 255)
@@ -53,7 +53,7 @@ public class Article extends BaseEntity {
 
     @NotNull
     @Lob
-    @Column(name = "summary", nullable = false)
+    @Column(name = "summary", columnDefinition = "TEXT", nullable = false)
     private String summary;
 
     @ColumnDefault("'0'")
