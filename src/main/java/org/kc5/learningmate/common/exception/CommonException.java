@@ -1,19 +1,17 @@
 package org.kc5.learningmate.common.exception;
 
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-@Setter
 public class CommonException extends RuntimeException {
 
-    private HttpStatus httpStatus;
-    private String message;
+    private final HttpStatus httpStatus;
+    private final String message;
 
-    public CommonException(HttpStatus httpStatus, ErrorCode errorCode) {
+    public CommonException(ErrorCode errorCode) {
         super(errorCode.getMessage());
-        this.httpStatus = httpStatus;
+        this.httpStatus = errorCode.getHttpStatus();
         this.message = errorCode.getMessage();
     }
 }

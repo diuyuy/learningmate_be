@@ -19,7 +19,7 @@ public class TodaysKeyword extends BaseEntity {
     private Keyword keyword;
 
     @NotNull
-    @Column(name = "date", nullable = false)
+    @Column(name = "date", nullable = false, unique = true)
     private LocalDate date;
 
 }
