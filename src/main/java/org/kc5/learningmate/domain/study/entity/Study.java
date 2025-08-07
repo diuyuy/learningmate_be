@@ -15,11 +15,11 @@ import org.kc5.learningmate.domain.member.entity.Member;
 @AllArgsConstructor
 public class Study extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "keyword_id")
+    @JoinColumn(name = "keyword_id", nullable = false)
     private Keyword keyword;
 
     @NotNull
