@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import org.kc5.learningmate.domain.quiz.entity.Quiz;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @Builder
@@ -36,17 +38,20 @@ public class QuizResponse {
     @Schema(description = "해설")
     private String explanation;
 
-    public static QuizResponse from(Quiz quiz) {
-        return QuizResponse.builder()
-                .articleTitle(quiz.getArticle().getTitle())
-                .description(quiz.getDescription())
-                .question1(quiz.getQuestion1())
-                .question2(quiz.getQuestion2())
-                .question3(quiz.getQuestion3())
-                .question4(quiz.getQuestion4())
-                .answer(quiz.getAnswer())
-                .explanation(quiz.getExplanation())
-                .build();
+    public static List<QuizResponse> from(List<Quiz> quizzes) {
+        return quizzes.stream()
+                .map(q -> QuizResponse.builder()
+                        .articleTitle(q.getArticle().getTitle())
+                        .description(q.getDescription())
+                        .question1(q.getQuestion1())
+                        .question2(q.getQuestion2())
+                        .question3(q.getQuestion3())
+                        .question4(q.getQuestion4())
+                        .answer(q.getAnswer())
+                        .explanation(q.getExplanation())
+                        .build()
+                )
+                .toList();
     }
 
 }
