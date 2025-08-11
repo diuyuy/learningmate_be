@@ -33,10 +33,10 @@ public class ReviewController {
     }
 
     @Operation(summary = "기사 상세 내 리뷰 조회", description = "특정 기사에 대해 작성한 나의 리뷰를 조회 합니다.")
-    @GetMapping("/articles/{articleId}/reviews")
+    @GetMapping("/articles/{articleId}/reviews/{memberId}") // 현재는 memberId를 PathVariable로 받지만, 로그인 기능 구현 후 제거 예정
     public ResponseEntity<ResultResponse<ReviewResponse>> getReview(@PathVariable("articleId") Long articleId,
-                                                    @RequestBody ReviewGetRequest request) {
-        ReviewResponse response = reviewService.getReview(articleId, request.getMemberId());
+                                                                    @PathVariable("memberId") Long memberId) {
+        ReviewResponse response = reviewService.getReview(articleId, memberId);
         return ResponseEntity
                 .ok(new ResultResponse<>(response));
     }
@@ -59,5 +59,14 @@ public class ReviewController {
         return ResponseEntity
                 .ok(new ResultResponse<>());
     }
+
+//    @Operation(summary = "swagger 테스트!!!!", description = "특정 기사에 대해 작성한 나의 리뷰를 조회 합니다.")
+//    @GetMapping("/articles/{articleId}/reviews")
+//    public ResponseEntity<ReviewResponse> getReview2(@PathVariable("articleId") Long articleId,
+//                                                     @RequestBody ReviewGetRequest request) {
+//        ReviewResponse response = reviewService.getReview(articleId, request.getMemberId());
+//        return ResponseEntity
+//                .ok(response);
+//    }
 
 }

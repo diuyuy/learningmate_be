@@ -47,8 +47,12 @@ public class ReviewService {
 
     @Transactional(readOnly = true)
     public ReviewResponse getReview(Long articleId, Long memberId) {
-        articleRepository.findById(articleId);
-        memberRepository.findById(memberId);
+        articleRepository.findById(articleId)
+                .orElseThrow(() -> new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
+
+        memberRepository.findById(memberId)
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
         Review review = reviewRepository.findByArticleIdAndMemberId(articleId, memberId);
         return ReviewResponse.from(review);
     }
