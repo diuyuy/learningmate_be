@@ -20,11 +20,11 @@ public class ArticleService {
     private final QuizRepository quizRepository;
 
     @Transactional(readOnly = true)
-    public QuizResponse getQuiz(Long articleId) {
+    public List<QuizResponse> getQuizList(Long articleId) {
         articleRepository.findById(articleId)
                 .orElseThrow(() -> new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
 
-        Quiz quiz = quizRepository.findByArticleId(articleId);
+        List<Quiz> quiz = quizRepository.findByArticleId(articleId);
 
         return QuizResponse.from(quiz);
 

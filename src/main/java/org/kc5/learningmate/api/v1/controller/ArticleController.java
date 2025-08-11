@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RequestMapping("/api/v1/articles")
 @RequiredArgsConstructor
 @RestController
@@ -20,8 +22,8 @@ public class ArticleController {
 
     @Operation(summary = "기사에 대한 퀴즈 조회", description = "특정 기사에 대해 작성한 퀴즈를 조회 합니다.")
     @GetMapping("/{articleId}/quizzes")
-    public ResponseEntity<ResultResponse<QuizResponse>> getQuiz(@PathVariable("articleId") Long articleId) {
-        QuizResponse response = articleService.getQuiz(articleId);
+    public ResponseEntity<ResultResponse<List<QuizResponse>>> getQuiz(@PathVariable("articleId") Long articleId) {
+        List<QuizResponse> response = articleService.getQuizList(articleId);
         return ResponseEntity
                 .ok(new ResultResponse<>(response));
     }

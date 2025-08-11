@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
-    Quiz findByArticleId(Long articleId);
+    List<Quiz> findByArticleId(Long articleId);
 }
