@@ -26,7 +26,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(40401, HttpStatus.NOT_FOUND, "존재하지 않는 회원입니다."),
     ARTICLE_NOT_FOUND(40402, HttpStatus.NOT_FOUND, "존재하지 않는 기사입니다."),
     REVIEW_NOT_FOUND(40403, HttpStatus.NOT_FOUND, "존재하지 않는 리뷰입니다."),
-
+    KEYWORD_NOT_FOUND(40404, HttpStatus.NOT_FOUND, "해당 기간의 키워드가 존재하지 않습니다."),
 
     //409
     DUPLICATE_REVIEW(40900, HttpStatus.CONFLICT, "기사에 대한 리뷰를 이미 작성했습니다."),
