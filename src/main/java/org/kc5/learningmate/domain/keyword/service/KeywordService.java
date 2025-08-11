@@ -1,7 +1,8 @@
 package org.kc5.learningmate.domain.keyword.service;
 
 import lombok.RequiredArgsConstructor;
-import org.kc5.learningmate.api.v1.dto.response.TodaysKeywordDto;
+import org.kc5.learningmate.api.v1.dto.response.KeywordResponse;
+import org.kc5.learningmate.api.v1.dto.response.TodaysKeywordResponse;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.keyword.entity.TodaysKeyword;
@@ -20,14 +21,23 @@ public class KeywordService {
     private final TodayKeywordRepository todayKeywordRepository;
 
     @Transactional(readOnly = true)
-    public List<TodaysKeywordDto> findByPeriodWithKeywords(LocalDate startDate, LocalDate endDate) {
+    public List<TodaysKeywordResponse> findByPeriodWithKeywords(LocalDate startDate, LocalDate endDate) {
         List<TodaysKeyword> todaysKeywords = todayKeywordRepository.findByPeriodWithKeyword(startDate, endDate);
 
         if (todaysKeywords.isEmpty())
-            throw new CommonException(ErrorCode.KEYWORD_NOT_FOUND);
+            throw new CommonException(ErrorCode.KEYWORD_LIST_NOT_FOUND);
 
         return todaysKeywords.stream()
-                             .map(TodaysKeywordDto::fromEntityWithKeyword)
+                             .map(TodaysKeywordResponse::fromEntityWithKeyword)
                              .toList();
     }
+
+
+    @Transactional(readOnly = true)
+    public KeywordResponse findById(Long id) {
+        return keywordRepository.findById(id)
+                                .map(KeywordResponse::fromEntity)
+                                .orElseThrow(() -> new CommonException(ErrorCode.KEYWORD_NOT_FOUND));
+    }
+
 }

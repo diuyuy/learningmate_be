@@ -1,15 +1,13 @@
 package org.kc5.learningmate.api.v1.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.kc5.learningmate.api.v1.dto.response.TodaysKeywordDto;
+import org.kc5.learningmate.api.v1.dto.response.KeywordResponse;
+import org.kc5.learningmate.api.v1.dto.response.TodaysKeywordResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.keyword.service.KeywordService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -21,11 +19,18 @@ public class KeywordController {
     private final KeywordService keywordService;
 
     @GetMapping()
-    public ResponseEntity<ResultResponse<List<TodaysKeywordDto>>> findAllWithKeywords(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
-        List<TodaysKeywordDto> todaysKeywordDtoList = keywordService.findByPeriodWithKeywords(startDate, endDate);
+    public ResponseEntity<ResultResponse<List<TodaysKeywordResponse>>> findAllWithKeywords(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
+        List<TodaysKeywordResponse> todaysKeywordDtoList = keywordService.findByPeriodWithKeywords(startDate, endDate);
 
         return ResponseEntity.ok()
-                             .body(new ResultResponse<List<TodaysKeywordDto>>(HttpStatus.OK, todaysKeywordDtoList));
+                             .body(new ResultResponse<>(HttpStatus.OK, todaysKeywordDtoList));
+    }
+
+    @GetMapping("/{keywordId}")
+    public ResponseEntity<ResultResponse<KeywordResponse>> findById(@PathVariable Long keywordId) {
+        KeywordResponse keywordDto = keywordService.findById(keywordId);
+        return ResponseEntity.ok()
+                             .body(new ResultResponse<>(HttpStatus.OK, keywordDto));
     }
 
 }
