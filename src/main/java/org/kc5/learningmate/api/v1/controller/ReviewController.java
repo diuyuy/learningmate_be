@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewCreateRequest;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewGetRequest;
+import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
 import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.review.service.ReviewService;
@@ -34,6 +35,15 @@ public class ReviewController {
                                                     @RequestBody ReviewGetRequest request) {
         ReviewResponse response = reviewService.getReview(articleId, request.getMemberId());
         return new ResultResponse<>(response);
+    }
+
+    @Operation(summary = "기사 상세 리뷰 수정", description = "한 개의 기사에 대해 리뷰를 수정 합니다.")
+    @PatchMapping("/articles/{articleId}/reviews/{reviewId}")
+    public ResultResponse<Void> updateReview(@PathVariable("articleId") Long articleId,
+                                             @PathVariable("reviewId") Long reviewId,
+                                             @Valid @RequestBody ReviewUpdateRequest request) {
+        reviewService.updateReview(articleId, reviewId, request);
+        return new ResultResponse<>();
     }
 
 }

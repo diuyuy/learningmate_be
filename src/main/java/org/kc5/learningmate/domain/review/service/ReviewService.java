@@ -2,6 +2,7 @@ package org.kc5.learningmate.domain.review.service;
 
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewCreateRequest;
+import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
 import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
@@ -50,6 +51,25 @@ public class ReviewService {
         memberRepository.findById(memberId);
         Review review = reviewRepository.findByArticleIdAndMemberId(articleId, memberId);
         return ReviewResponse.from(review);
+    }
+
+    @Transactional
+    public void updateReview(Long articleId, Long reviewId, ReviewUpdateRequest request) {
+        memberRepository.findById(request.getMemberId())
+                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new CommonException(ErrorCode.REVIEW_NOT_FOUND));
+
+        Article article = articleRepository.findById(articleId)
+                .orElseThrow(() -> new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
+
+        // 소유/매핑 검증
+        if (!review.getArticle().getId().equals(article.getId())) {
+            throw new CommonException(ErrorCode.FORBIDDEN);
+        }
+
+        review.update(request.getContent1(), request.getContent2(), request.getContent3());
     }
 
 }
