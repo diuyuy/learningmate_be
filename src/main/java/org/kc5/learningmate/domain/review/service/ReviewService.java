@@ -2,12 +2,14 @@ package org.kc5.learningmate.domain.review.service;
 
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewCreateRequest;
+import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.article.entity.Article;
 import org.kc5.learningmate.domain.article.repository.ArticleRepository;
 import org.kc5.learningmate.domain.member.entity.Member;
 import org.kc5.learningmate.domain.member.repository.MemberRepository;
+import org.kc5.learningmate.domain.review.entity.Review;
 import org.kc5.learningmate.domain.review.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,14 @@ public class ReviewService {
         if (exists) {
             throw new CommonException(ErrorCode.DUPLICATE_REVIEW);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public ReviewResponse getReview(Long articleId, Long memberId) {
+        articleRepository.findById(articleId);
+        memberRepository.findById(memberId);
+        Review review = reviewRepository.findByArticleIdAndMemberId(articleId, memberId);
+        return ReviewResponse.from(review);
     }
 
 }
