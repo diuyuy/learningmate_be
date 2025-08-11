@@ -46,4 +46,12 @@ public class ReviewController {
         return new ResultResponse<>();
     }
 
+    @Operation(summary = "기사 상세 리뷰 삭제", description = "한 개의 기사에 대해 리뷰를 삭제 합니다.")
+    @DeleteMapping("/articles/{articleId}/reviews/{reviewId}")
+    public ResultResponse<Void> createReview(@PathVariable("articleId") Long articleId,
+                                             @PathVariable("reviewId") Long reviewId) {
+        reviewService.deleteReview(articleId, reviewId);
+        return new ResultResponse<>();
+    }
+
 }

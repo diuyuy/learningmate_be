@@ -72,4 +72,18 @@ public class ReviewService {
         review.update(request.getContent1(), request.getContent2(), request.getContent3());
     }
 
+    @Transactional
+    public void deleteReview(Long articleId, Long reviewId){
+        Article article = articleRepository.findById(articleId).orElseThrow(() ->
+                new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
+
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() ->
+                new CommonException(ErrorCode.REVIEW_NOT_FOUND));
+
+        if (!review.getArticle().getId().equals(article.getId())) {
+            throw new CommonException(ErrorCode.FORBIDDEN);
+        }
+        reviewRepository.deleteById(reviewId);
+    }
+
 }
