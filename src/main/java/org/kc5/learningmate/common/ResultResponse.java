@@ -19,8 +19,24 @@ public class ResultResponse<T> implements Serializable {
         this.message = message;
     }
 
+    public ResultResponse() {
+        this.status = HttpStatus.OK.value();
+        this.message = "success";
+    }
+
     public ResultResponse(HttpStatus status, T result) {
         this.status = status.value();
+        this.message = "success";
+        this.result = result;
+    }
+
+    public ResultResponse(HttpStatus status) {
+        this.status = status.value();
+        this.message = "success";
+    }
+
+    public ResultResponse(T result) {
+        this.status = HttpStatus.OK.value();
         this.message = "success";
         this.result = result;
     }
