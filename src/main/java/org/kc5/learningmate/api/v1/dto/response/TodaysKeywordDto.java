@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Value;
 import org.kc5.learningmate.domain.keyword.entity.TodaysKeyword;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
@@ -12,7 +11,7 @@ import java.time.LocalDate;
  */
 @Value
 @Builder
-public class TodaysKeywordDto implements Serializable {
+public class TodaysKeywordDto {
     Long id;
     KeywordDto keyword;
     LocalDate date;
