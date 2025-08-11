@@ -2,6 +2,8 @@ package org.kc5.learningmate.domain.keyword.service;
 
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.response.TodaysKeywordDto;
+import org.kc5.learningmate.common.exception.CommonException;
+import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.keyword.entity.TodaysKeyword;
 import org.kc5.learningmate.domain.keyword.repository.KeywordRepository;
 import org.kc5.learningmate.domain.keyword.repository.TodayKeywordRepository;
@@ -20,6 +22,9 @@ public class KeywordService {
     @Transactional(readOnly = true)
     public List<TodaysKeywordDto> findByPeriodWithKeywords(LocalDate startDate, LocalDate endDate) {
         List<TodaysKeyword> todaysKeywords = todayKeywordRepository.findByPeriodWithKeyword(startDate, endDate);
+
+        if (todaysKeywords.isEmpty())
+            throw new CommonException(ErrorCode.KEYWORD_NOT_FOUND);
 
         return todaysKeywords.stream()
                              .map(TodaysKeywordDto::fromEntityWithKeyword)
