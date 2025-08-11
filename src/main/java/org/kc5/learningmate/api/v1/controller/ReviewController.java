@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewCreateRequest;
-import org.kc5.learningmate.api.v1.dto.request.review.ReviewGetRequest;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
 import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
@@ -32,8 +31,9 @@ public class ReviewController {
                 .body(new ResultResponse<>(HttpStatus.CREATED));
     }
 
+    // TODO: 현재는 memberId를 PathVariable로 받지만, 로그인 기능 구현 후 제거 예정
     @Operation(summary = "기사 상세 내 리뷰 조회", description = "특정 기사에 대해 작성한 나의 리뷰를 조회 합니다.")
-    @GetMapping("/articles/{articleId}/reviews/{memberId}") // 현재는 memberId를 PathVariable로 받지만, 로그인 기능 구현 후 제거 예정
+    @GetMapping("/articles/{articleId}/reviews/{memberId}")
     public ResponseEntity<ResultResponse<ReviewResponse>> getReview(@PathVariable("articleId") Long articleId,
                                                                     @PathVariable("memberId") Long memberId) {
         ReviewResponse response = reviewService.getReview(articleId, memberId);
@@ -51,6 +51,7 @@ public class ReviewController {
                 .ok(new ResultResponse<>());
     }
 
+    // TODO: 로그인 구현 후, 인증 사용자(memberId)가 해당 리뷰의 작성자인지 검증
     @Operation(summary = "기사 상세 리뷰 삭제", description = "한 개의 기사에 대해 리뷰를 삭제 합니다.")
     @DeleteMapping("/articles/{articleId}/reviews/{reviewId}")
     public  ResponseEntity<ResultResponse<Void>> createReview(@PathVariable("articleId") Long articleId,
@@ -59,14 +60,5 @@ public class ReviewController {
         return ResponseEntity
                 .ok(new ResultResponse<>());
     }
-
-//    @Operation(summary = "swagger 테스트!!!!", description = "특정 기사에 대해 작성한 나의 리뷰를 조회 합니다.")
-//    @GetMapping("/articles/{articleId}/reviews")
-//    public ResponseEntity<ReviewResponse> getReview2(@PathVariable("articleId") Long articleId,
-//                                                     @RequestBody ReviewGetRequest request) {
-//        ReviewResponse response = reviewService.getReview(articleId, request.getMemberId());
-//        return ResponseEntity
-//                .ok(response);
-//    }
 
 }
