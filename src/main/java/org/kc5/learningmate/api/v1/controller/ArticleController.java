@@ -2,6 +2,7 @@ package org.kc5.learningmate.api.v1.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.kc5.learningmate.api.v1.dto.response.ArticleResponse;
 import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.article.service.ArticleService;
@@ -26,6 +27,12 @@ public class ArticleController {
         List<QuizResponse> response = articleService.getQuizList(articleId);
         return ResponseEntity
                 .ok(new ResultResponse<>(response));
+    }
+
+    @GetMapping("/{articleId}")
+    public ResponseEntity<ResultResponse<ArticleResponse>> findArticleResponseById(@PathVariable("articleId") Long articleId) {
+        return ResponseEntity
+                .ok(new ResultResponse<>(articleService.findById(articleId)));
     }
 
 }

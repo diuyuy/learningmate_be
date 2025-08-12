@@ -1,6 +1,7 @@
 package org.kc5.learningmate.domain.article.service;
 
 import lombok.RequiredArgsConstructor;
+import org.kc5.learningmate.api.v1.dto.response.ArticleResponse;
 import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
@@ -33,6 +34,18 @@ public class ArticleService {
 
         return QuizResponse.from(quizList);
 
+    }
+
+    @Transactional(readOnly = true)
+    public ArticleResponse findById(Long articleId) {
+        return articleRepository.findById(articleId)
+                                .map(ArticleResponse::from)
+                                .orElseThrow(() -> new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
+    }
+
+    public void validateArticleExists(Long articleId) {
+        if (!articleRepository.existsById(articleId))
+            throw new CommonException(ErrorCode.ARTICLE_NOT_FOUND);
     }
 
 }
