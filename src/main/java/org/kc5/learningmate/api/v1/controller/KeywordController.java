@@ -3,8 +3,10 @@ package org.kc5.learningmate.api.v1.controller;
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.response.KeywordResponse;
 import org.kc5.learningmate.api.v1.dto.response.TodaysKeywordResponse;
+import org.kc5.learningmate.api.v1.dto.response.VideoResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.keyword.service.KeywordService;
+import org.kc5.learningmate.domain.study.service.VideoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import java.util.List;
 @RestController
 public class KeywordController {
     private final KeywordService keywordService;
+    private final VideoService videoService;
 
     @GetMapping()
     public ResponseEntity<ResultResponse<List<TodaysKeywordResponse>>> findAllWithKeywords(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
@@ -31,6 +34,13 @@ public class KeywordController {
         KeywordResponse keywordDto = keywordService.findById(keywordId);
         return ResponseEntity.ok()
                              .body(new ResultResponse<>(HttpStatus.OK, keywordDto));
+    }
+
+    @GetMapping("/{keywordId}/videos")
+    public ResponseEntity<ResultResponse<VideoResponse>> findVideoByKeywordId(@PathVariable Long keywordId) {
+        VideoResponse videoResponse = videoService.findByKeywordId(keywordId);
+        return ResponseEntity.ok()
+                             .body(new ResultResponse<>(HttpStatus.OK, videoResponse));
     }
 
 }
