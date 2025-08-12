@@ -1,10 +1,12 @@
 package org.kc5.learningmate.api.v1.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.kc5.learningmate.api.v1.dto.response.ArticlePreviewResponse;
 import org.kc5.learningmate.api.v1.dto.response.KeywordResponse;
 import org.kc5.learningmate.api.v1.dto.response.TodaysKeywordResponse;
 import org.kc5.learningmate.api.v1.dto.response.VideoResponse;
 import org.kc5.learningmate.common.ResultResponse;
+import org.kc5.learningmate.domain.article.service.ArticleService;
 import org.kc5.learningmate.domain.keyword.service.KeywordService;
 import org.kc5.learningmate.domain.study.service.VideoService;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,7 @@ import java.util.List;
 public class KeywordController {
     private final KeywordService keywordService;
     private final VideoService videoService;
+    private final ArticleService articleService;
 
     @GetMapping()
     public ResponseEntity<ResultResponse<List<TodaysKeywordResponse>>> findAllWithKeywords(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
@@ -43,4 +46,11 @@ public class KeywordController {
                              .body(new ResultResponse<>(HttpStatus.OK, videoResponse));
     }
 
+    @GetMapping("/{keywordId}/articles")
+    public ResponseEntity<ResultResponse<List<ArticlePreviewResponse>>> findArticlePreviewByKeywordId(@PathVariable Long keywordId) {
+        List<ArticlePreviewResponse> articlePreviewResponse = articleService.findArticlePreviewByKeywordId(keywordId);
+
+        return ResponseEntity.ok()
+                             .body(new ResultResponse<>(HttpStatus.OK, articlePreviewResponse));
+    }
 }
