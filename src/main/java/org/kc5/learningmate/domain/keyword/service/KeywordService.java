@@ -40,4 +40,9 @@ public class KeywordService {
                                 .orElseThrow(() -> new CommonException(ErrorCode.KEYWORD_NOT_FOUND));
     }
 
+    public void validateKeywordExists(Long keywordId) {
+        if (!keywordRepository.existsById(keywordId))
+            throw new CommonException(ErrorCode.KEYWORD_NOT_FOUND);
+    }
+
 }
