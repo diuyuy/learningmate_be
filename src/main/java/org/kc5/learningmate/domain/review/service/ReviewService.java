@@ -1,6 +1,7 @@
 package org.kc5.learningmate.domain.review.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewCreateRequest;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
 import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
@@ -11,17 +12,20 @@ import org.kc5.learningmate.domain.article.repository.ArticleRepository;
 import org.kc5.learningmate.domain.member.entity.Member;
 import org.kc5.learningmate.domain.member.repository.MemberRepository;
 import org.kc5.learningmate.domain.review.entity.Review;
+import org.kc5.learningmate.domain.review.repository.LikeReviewRepository;
 import org.kc5.learningmate.domain.review.repository.ReviewRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReviewService {
 
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
+    private final LikeReviewRepository likeReviewRepository;
 
     @Transactional
     public void createReview(Long articleId, ReviewCreateRequest request) {
@@ -88,6 +92,23 @@ public class ReviewService {
             throw new CommonException(ErrorCode.FORBIDDEN);
         }
         reviewRepository.deleteById(reviewId);
+    }
+
+    @Transactional
+    public void likeReview(Long reviewId, Long memberId) {
+
+        int affected = likeReviewRepository.insertIgnore(memberId, reviewId);
+        if (affected == 0) {
+            log.info("이미 좋아요 상태이므로 요청 무시 - reviewId={}, memberId={}", reviewId, memberId);
+        }
+
+    }
+
+    @Transactional
+    public void unlikeReview(Long reviewId, Long memberId) {
+        int deleted = likeReviewRepository.deleteDirect(reviewId, memberId);
+
+        if (deleted == 0) log.info("이미 좋아요 취소 상태이므로 요청 무시 - reviewId={}, memberId={}", reviewId, memberId);
     }
 
 }

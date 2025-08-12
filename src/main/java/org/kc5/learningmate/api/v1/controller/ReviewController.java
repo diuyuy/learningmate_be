@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewCreateRequest;
+import org.kc5.learningmate.api.v1.dto.request.review.ReviewLikeRequest;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
 import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
@@ -57,6 +58,26 @@ public class ReviewController {
     public  ResponseEntity<ResultResponse<Void>> createReview(@PathVariable("articleId") Long articleId,
                                              @PathVariable("reviewId") Long reviewId) {
         reviewService.deleteReview(articleId, reviewId);
+        return ResponseEntity
+                .ok(new ResultResponse<>());
+    }
+
+    // TODO: 현재는 memberId를 RequestBody로 받지만, 로그인 기능 구현 후 제거 예정
+    @Operation(summary = "리뷰 좋아요", description = "한 개의 리뷰에 대해 좋아요 합니다.")
+    @PostMapping("/reviews/{reviewId}/likes")
+    public  ResponseEntity<ResultResponse<Void>> likeReview(@PathVariable("reviewId") Long reviewId,
+                                                              @RequestBody ReviewLikeRequest req) {
+        reviewService.likeReview(reviewId, req.getMemberId());
+        return ResponseEntity
+                .ok(new ResultResponse<>());
+    }
+
+    // TODO: 현재는 memberId를 RequestBody로 받지만, 로그인 기능 구현 후 제거 예정
+    @Operation(summary = "리뷰 좋아요 취소", description = "한 개의 리뷰에 대해 좋아요 취소 합니다.")
+    @DeleteMapping("/reviews/{reviewId}/likes")
+    public  ResponseEntity<ResultResponse<Void>> unlikeReview(@PathVariable("reviewId") Long reviewId,
+                                                            @RequestBody ReviewLikeRequest req) {
+        reviewService.unlikeReview(reviewId, req.getMemberId());
         return ResponseEntity
                 .ok(new ResultResponse<>());
     }
