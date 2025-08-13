@@ -1,5 +1,6 @@
 package org.kc5.learningmate.api.v1.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +12,9 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @Builder
-@Schema(description = "퀴즈 조회 응답 모델")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Schema(description = "퀴즈 조회/채점 응답 모델")
 public class QuizResponse {
-
-    @Schema(description = "기사 제목")
-    private String articleTitle;
 
     @Schema(description = "퀴즈 문제")
     private String description;
@@ -41,17 +40,22 @@ public class QuizResponse {
     public static List<QuizResponse> from(List<Quiz> quizzes) {
         return quizzes.stream()
                 .map(q -> QuizResponse.builder()
-                        .articleTitle(q.getArticle().getTitle())
                         .description(q.getDescription())
                         .question1(q.getQuestion1())
                         .question2(q.getQuestion2())
                         .question3(q.getQuestion3())
                         .question4(q.getQuestion4())
-                        .answer(q.getAnswer())
-                        .explanation(q.getExplanation())
                         .build()
                 )
                 .toList();
+    }
+
+    // 퀴즈 채점용 응답
+    public static QuizResponse from(Quiz quiz, boolean isCorrect) {
+        return QuizResponse.builder()
+                .answer(quiz.getAnswer())
+                .explanation(isCorrect ? null : quiz.getExplanation())
+                .build();
     }
 
 }
