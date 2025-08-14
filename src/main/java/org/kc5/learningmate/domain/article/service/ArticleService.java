@@ -2,6 +2,7 @@ package org.kc5.learningmate.domain.article.service;
 
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.MemberQuizRequest;
+import org.kc5.learningmate.api.v1.dto.response.ArticlePreviewResponse;
 import org.kc5.learningmate.api.v1.dto.response.ArticleResponse;
 import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
 import org.kc5.learningmate.common.exception.CommonException;
@@ -10,6 +11,7 @@ import org.kc5.learningmate.domain.article.repository.ArticleRepository;
 import org.kc5.learningmate.domain.member.entity.Member;
 import org.kc5.learningmate.domain.member.repository.MemberRepository;
 import org.kc5.learningmate.domain.quiz.entity.MemberQuiz;
+import org.kc5.learningmate.domain.keyword.service.KeywordService;
 import org.kc5.learningmate.domain.quiz.entity.Quiz;
 import org.kc5.learningmate.domain.quiz.repository.MemberQuizRepository;
 import org.kc5.learningmate.domain.quiz.repository.QuizRepository;
@@ -26,6 +28,7 @@ public class ArticleService {
     private final QuizRepository quizRepository;
     private final MemberQuizRepository memberQuizRepository;
     private final MemberRepository memberRepository;
+    private final KeywordService keywordService;
 
     @Transactional(readOnly = true)
     public List<QuizResponse> getQuizList(Long articleId) {
@@ -48,6 +51,13 @@ public class ArticleService {
         return articleRepository.findById(articleId)
                                 .map(ArticleResponse::from)
                                 .orElseThrow(() -> new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ArticlePreviewResponse> findArticlePreviewByKeywordId(Long keywordId) {
+        keywordService.validateKeywordExists(keywordId);
+
+        return articleRepository.findArticlePreviewByKeywordId(keywordId);
     }
 
     public void validateArticleExists(Long articleId) {
