@@ -1,5 +1,6 @@
 package org.kc5.learningmate.domain.quiz.repository;
 
+import jakarta.validation.constraints.NotNull;
 import org.kc5.learningmate.domain.quiz.entity.MemberQuiz;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,5 +18,14 @@ public interface MemberQuizRepository extends JpaRepository<MemberQuiz, Long> {
          WHERE mq.quiz.id = :quizId
            AND mq.member.id = :memberId
     """)
-    int updateAnswer(Long quizId, Long memberId, String memberAnswer);
+    void updateAnswer(Long quizId, Long memberId, String memberAnswer);
+
+    @Query("""
+      SELECT (count(mq) > 0)
+        FROM MemberQuiz mq
+       WHERE mq.quiz.id = :quizId
+         AND mq.member.id = :memberId
+    """)
+    boolean existsSolved(Long quizId, Long memberId);
+
 }

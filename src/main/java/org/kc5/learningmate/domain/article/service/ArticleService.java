@@ -70,17 +70,20 @@ public class ArticleService {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new CommonException(ErrorCode.QUIZ_NOT_FOUND));
 
+        boolean isExist = memberQuizRepository.existsSolved(quizId, req.getMemberId());
+
         boolean isCorrect = java.util.Objects.equals(quiz.getAnswer(), req.getMemberAnswer());
 
-        int updated = memberQuizRepository.updateAnswer(quizId, req.getMemberId(), req.getMemberAnswer());
-
-        if (updated == 0) {
+        if (!isExist) {
             MemberQuiz newMemberQuiz = MemberQuiz.builder()
                     .quiz(quiz)
                     .member(member)
                     .memberAnswer(req.getMemberAnswer())
                     .build();
             memberQuizRepository.save(newMemberQuiz);
+        }
+        else {
+            memberQuizRepository.updateAnswer(quizId, req.getMemberId(), req.getMemberAnswer());
         }
 
         return QuizResponse.from(quiz, isCorrect, req.getMemberAnswer());
