@@ -68,7 +68,7 @@ public class ArticleService {
     @Transactional
     public QuizResponse solveQuiz(Long articleId, Long quizId, MemberQuizRequest req) {
 
-        // TODO : 로그인 기능 구현 시 삭제 예정
+        // TODO : 로그인 기능 구현 시 변경 예정
         Member member = memberRepository.findById(req.getMemberId()).orElseThrow(() ->
                 new CommonException(ErrorCode.MEMBER_NOT_FOUND)
         );
