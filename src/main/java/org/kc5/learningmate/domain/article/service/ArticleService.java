@@ -1,14 +1,19 @@
 package org.kc5.learningmate.domain.article.service;
 
 import lombok.RequiredArgsConstructor;
+import org.kc5.learningmate.api.v1.dto.request.MemberQuizRequest;
 import org.kc5.learningmate.api.v1.dto.response.ArticlePreviewResponse;
 import org.kc5.learningmate.api.v1.dto.response.ArticleResponse;
 import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.article.repository.ArticleRepository;
+import org.kc5.learningmate.domain.member.entity.Member;
+import org.kc5.learningmate.domain.member.repository.MemberRepository;
+import org.kc5.learningmate.domain.quiz.entity.MemberQuiz;
 import org.kc5.learningmate.domain.keyword.service.KeywordService;
 import org.kc5.learningmate.domain.quiz.entity.Quiz;
+import org.kc5.learningmate.domain.quiz.repository.MemberQuizRepository;
 import org.kc5.learningmate.domain.quiz.repository.QuizRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +26,8 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
     private final QuizRepository quizRepository;
+    private final MemberQuizRepository memberQuizRepository;
+    private final MemberRepository memberRepository;
     private final KeywordService keywordService;
 
     @Transactional(readOnly = true)
@@ -58,4 +65,38 @@ public class ArticleService {
             throw new CommonException(ErrorCode.ARTICLE_NOT_FOUND);
     }
 
+    @Transactional
+    public QuizResponse solveQuiz(Long articleId, Long quizId, MemberQuizRequest req) {
+
+        // TODO : 로그인 기능 구현 시 변경 예정
+        Member member = memberRepository.findById(req.getMemberId()).orElseThrow(() ->
+                new CommonException(ErrorCode.MEMBER_NOT_FOUND)
+        );
+
+        if (!articleRepository.existsById(articleId)) {
+            throw new CommonException(ErrorCode.ARTICLE_NOT_FOUND);
+        }
+
+        Quiz quiz = quizRepository.findById(quizId)
+                .orElseThrow(() -> new CommonException(ErrorCode.QUIZ_NOT_FOUND));
+
+        boolean isExist = memberQuizRepository.existsSolved(quizId, req.getMemberId());
+
+        boolean isCorrect = java.util.Objects.equals(quiz.getAnswer(), req.getMemberAnswer());
+
+        if (!isExist) {
+            MemberQuiz newMemberQuiz = MemberQuiz.builder()
+                    .quiz(quiz)
+                    .member(member)
+                    .memberAnswer(req.getMemberAnswer())
+                    .build();
+            memberQuizRepository.save(newMemberQuiz);
+        }
+        else {
+            memberQuizRepository.updateAnswer(quizId, req.getMemberId(), req.getMemberAnswer());
+        }
+
+        return QuizResponse.from(quiz, isCorrect, req.getMemberAnswer());
+
+    }
 }
