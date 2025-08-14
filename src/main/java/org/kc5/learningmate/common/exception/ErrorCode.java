@@ -30,6 +30,7 @@ public enum ErrorCode {
     KEYWORD_LIST_NOT_FOUND(40405, HttpStatus.NOT_FOUND, "해당 기간의 키워드가 존재하지 않습니다."),
     QUIZ_LIST_NOT_FOUND(40406, HttpStatus.NOT_FOUND, "퀴즈가 존재하지 않습니다."),
     VIDEO_BY_KEYWORD_ID_NOT_FOUND(40407, HttpStatus.NOT_FOUND, "해당 키워드와 연관된 영상이 존재하지 않습니다."),
+    ARTICLE_BY_KEYWORD_ID_NOT_FOUND(40408, HttpStatus.NOT_FOUND, "해당 키워드와 연관된 기사가 존재하지 않습니다."),
 
     //409
     DUPLICATE_REVIEW(40900, HttpStatus.CONFLICT, "기사에 대한 리뷰를 이미 작성했습니다."),
