@@ -48,9 +48,9 @@ public class KeywordController {
 
     @GetMapping("/{keywordId}/articles")
     public ResponseEntity<ResultResponse<List<ArticlePreviewResponse>>> findArticlePreviewByKeywordId(@PathVariable Long keywordId) {
-        List<ArticlePreviewResponse> articlePreviewResponse = articleService.findArticlePreviewByKeywordId(keywordId);
+        List<ArticlePreviewResponse> articlePreviewResponses = articleService.findArticlePreviewByKeywordId(keywordId);
 
         return ResponseEntity.ok()
-                             .body(new ResultResponse<>(HttpStatus.OK, articlePreviewResponse));
+                             .body(new ResultResponse<>(HttpStatus.OK, articlePreviewResponses));
     }
 }

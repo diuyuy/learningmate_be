@@ -50,12 +50,7 @@ public class ArticleService {
     public List<ArticlePreviewResponse> findArticlePreviewByKeywordId(Long keywordId) {
         keywordService.validateKeywordExists(keywordId);
 
-        List<ArticlePreviewResponse> articlePreviewResponses = articleRepository.findArticlePreviewByKeywordId(keywordId);
-
-        if (articlePreviewResponses.isEmpty())
-            throw new CommonException(ErrorCode.ARTICLE_BY_KEYWORD_ID_NOT_FOUND);
-
-        return articlePreviewResponses;
+        return articleRepository.findArticlePreviewByKeywordId(keywordId);
     }
 
     public void validateArticleExists(Long articleId) {
