@@ -83,7 +83,7 @@ public class ArticleService {
             memberQuizRepository.save(newMemberQuiz);
         }
 
-        return QuizResponse.from(quiz, isCorrect);
+        return QuizResponse.from(quiz, isCorrect, req.getMemberAnswer());
 
     }
 }

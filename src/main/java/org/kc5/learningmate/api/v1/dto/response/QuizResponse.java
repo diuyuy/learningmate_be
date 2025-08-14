@@ -36,6 +36,9 @@ public class QuizResponse {
 
     @Schema(description = "해설")
     private String explanation;
+    
+    @Schema(description = "정답 여부")
+    private String status;
 
     public static List<QuizResponse> from(List<Quiz> quizzes) {
         return quizzes.stream()
@@ -51,10 +54,11 @@ public class QuizResponse {
     }
 
     // 퀴즈 채점용 응답
-    public static QuizResponse from(Quiz quiz, boolean isCorrect) {
+    public static QuizResponse from(Quiz quiz, boolean isCorrect, String memberAnswer) {
         return QuizResponse.builder()
-                .answer(quiz.getAnswer())
-                .explanation(isCorrect ? null : quiz.getExplanation())
+                .answer(isCorrect ? quiz.getAnswer() : memberAnswer)
+                .explanation(isCorrect ? quiz.getExplanation() : null )
+                .status(isCorrect ? "정답" : "오답")
                 .build();
     }
 
