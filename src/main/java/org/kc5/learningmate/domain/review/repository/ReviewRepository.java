@@ -9,9 +9,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     boolean existsByMemberIdAndArticleId(Long memberId, Long articleId);
+
+    Optional<Review> findByArticleIdAndMemberId(Long articleId, Long memberId);
 
     Review findByArticleIdAndMemberId(Long articleId, Long memberId);
 
@@ -25,4 +29,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
                         where a.keyword.id = :keywordId
             """)
     Page<ReviewResponse> findByKeywordId(@Param("keywordId") Long keywordId, Pageable pageable);
+
 }

@@ -62,8 +62,11 @@ public class ReviewService {
         memberRepository.findById(memberId)
                         .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Review review = reviewRepository.findByArticleIdAndMemberId(articleId, memberId);
-        return MyReviewResponse.from(review);
+
+        return reviewRepository.findByArticleIdAndMemberId(articleId, memberId)
+                .map(ReviewResponse::from)
+                .orElse(null);
+
     }
 
     @Transactional
@@ -86,12 +89,15 @@ public class ReviewService {
 
         review.update(request.getContent1(), request.getContent2(), request.getContent3());
     }
+  
 
     @Transactional
     public void deleteReview(Long articleId, Long reviewId) {
-        Article article = articleRepository.findById(articleId)
-                                           .orElseThrow(() ->
-                                                   new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
+
+        Article article = articleRepository.findById(articleId).orElseThrow(() ->
+                new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
+
+       
 
         Review review = reviewRepository.findById(reviewId)
                                         .orElseThrow(() ->
@@ -104,6 +110,7 @@ public class ReviewService {
         }
         reviewRepository.deleteById(reviewId);
     }
+  
 
     @Transactional
     public void likeReview(Long reviewId, Long memberId) {
