@@ -6,8 +6,11 @@ import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.MemberQuizRequest;
 import org.kc5.learningmate.api.v1.dto.response.ArticleResponse;
 import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
+import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.article.service.ArticleService;
+import org.kc5.learningmate.domain.review.service.ReviewService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +22,7 @@ import java.util.List;
 public class ArticleController {
 
     private final ArticleService articleService;
+    private final ReviewService reviewService;
 
     @Operation(summary = "기사에 대한 퀴즈 조회", description = "특정 기사에 대해 작성한 퀴즈를 조회 합니다.")
     @GetMapping("/{articleId}/quizzes")
@@ -42,6 +46,14 @@ public class ArticleController {
         QuizResponse response = articleService.solveQuiz(articleId, quizId, req);
         return ResponseEntity
                 .ok(new ResultResponse<>(response));
+    }
+
+    @GetMapping("/{articleId}/reviews")
+    public ResponseEntity<ResultResponse<List<ReviewResponse>>> findReviewsByArticleId(@PathVariable("articleId") Long articleId, Pageable pageable) {
+        List<ReviewResponse> reviews = reviewService.getReviewsByArticleId(articleId, pageable);
+
+        return ResponseEntity
+                .ok(new ResultResponse<>(reviews));
     }
 
 }

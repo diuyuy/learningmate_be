@@ -53,4 +53,8 @@ public class KeywordController {
         return ResponseEntity.ok()
                              .body(new ResultResponse<>(HttpStatus.OK, articlePreviewResponses));
     }
+
+//    @GetMapping("/{keywordId}/reviews")
+//    public ResponseEntity<ResultResponse<Page<ReviewResponse>>> findReviewsByArticle(@PathVariable Long keywordId) {
+//    }
 }
