@@ -122,12 +122,18 @@ public class ReviewService {
         if (deleted == 0) log.info("이미 좋아요 취소 상태이므로 요청 무시 - reviewId={}, memberId={}", reviewId, memberId);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ReviewResponse> getReviewsByArticleId(Long articleId, Pageable pageable) {
         Page<Review> reviews = reviewRepository.findByArticleId(articleId, pageable);
 
         return reviews.map(ReviewResponse::from)
                       .getContent();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReviewResponse> getReviewsByKeywordId(Long keywordId, Pageable pageable) {
+        Page<ReviewResponse> reviews = reviewRepository.findByKeywordId(keywordId, pageable);
+        return reviews.getContent();
     }
 
 }
