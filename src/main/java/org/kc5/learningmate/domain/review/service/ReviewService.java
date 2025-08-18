@@ -42,7 +42,7 @@ public class ReviewService {
 
     // 사용자 리뷰 중복 확인 메서드
     @Transactional(readOnly = true)
-    public void hasWrittenReview(Long memberId, Long articleId){
+    public void hasWrittenReview(Long memberId, Long articleId) {
         boolean exists = reviewRepository.existsByMemberIdAndArticleId(memberId, articleId);
         if (exists) {
             throw new CommonException(ErrorCode.DUPLICATE_REVIEW);
@@ -57,8 +57,9 @@ public class ReviewService {
         memberRepository.findById(memberId)
                 .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        Review review = reviewRepository.findByArticleIdAndMemberId(articleId, memberId);
-        return ReviewResponse.from(review);
+        return reviewRepository.findByArticleIdAndMemberId(articleId, memberId)
+                .map(ReviewResponse::from)
+                .orElse(null);
     }
 
     @Transactional
@@ -81,7 +82,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(Long articleId, Long reviewId){
+    public void deleteReview(Long articleId, Long reviewId) {
         Article article = articleRepository.findById(articleId).orElseThrow(() ->
                 new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
 
