@@ -1,41 +1,25 @@
 package org.kc5.learningmate.api.v1.dto.response;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import jakarta.validation.constraints.NotNull;
 import org.kc5.learningmate.domain.review.entity.Review;
 
-@Getter
-@AllArgsConstructor
-@Builder
-@Schema(description = "리뷰 작성 응답 모델")
-public class ReviewResponse {
+import java.time.LocalDateTime;
 
-    @Schema(description = "회원 정보")
-    private String nickname;
+/**
+ * DTO for {@link org.kc5.learningmate.domain.review.entity.Review}
+ */
+public record ReviewResponse(Long id,
+                             LocalDateTime updatedAt,
+                             @NotNull String content1,
+                             Long memberId) {
 
-    @Schema(description = "기사 정보")
-    private String title;
-
-    @Schema(description = "기사에 대한 내 생각")
-    private String content1;
-
-    @Schema(description = "어려웠던 용어 정리")
-    private String content2;
-
-    @Schema(description = "개인적으로 더 공부한 내용")
-    private String content3;
-
-    // Entity -> DTO 변환 메서드
     public static ReviewResponse from(Review review) {
-        return ReviewResponse.builder()
-                .nickname(review.getMember().getNickname())
-                .title(review.getArticle().getTitle())
-                .content1(review.getContent1())
-                .content2(review.getContent2())
-                .content3(review.getContent3())
-                .build();
+        return new ReviewResponse(
+                review.getId(),
+                review.getUpdatedAt(),
+                review.getContent1(),
+                review.getMember()
+                      .getId()
+        );
     }
-
 }
