@@ -1,14 +1,13 @@
 package org.kc5.learningmate.api.v1.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.kc5.learningmate.api.v1.dto.response.ArticlePreviewResponse;
-import org.kc5.learningmate.api.v1.dto.response.KeywordResponse;
-import org.kc5.learningmate.api.v1.dto.response.TodaysKeywordResponse;
-import org.kc5.learningmate.api.v1.dto.response.VideoResponse;
+import org.kc5.learningmate.api.v1.dto.response.*;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.article.service.ArticleService;
 import org.kc5.learningmate.domain.keyword.service.KeywordService;
+import org.kc5.learningmate.domain.review.service.ReviewService;
 import org.kc5.learningmate.domain.study.service.VideoService;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +22,7 @@ public class KeywordController {
     private final KeywordService keywordService;
     private final VideoService videoService;
     private final ArticleService articleService;
+    private final ReviewService reviewService;
 
     @GetMapping()
     public ResponseEntity<ResultResponse<List<TodaysKeywordResponse>>> findAllWithKeywords(@RequestParam LocalDate startDate, @RequestParam LocalDate endDate) {
@@ -54,7 +54,11 @@ public class KeywordController {
                              .body(new ResultResponse<>(HttpStatus.OK, articlePreviewResponses));
     }
 
-//    @GetMapping("/{keywordId}/reviews")
-//    public ResponseEntity<ResultResponse<Page<ReviewResponse>>> findReviewsByArticle(@PathVariable Long keywordId) {
-//    }
+    @GetMapping("/{keywordId}/reviews")
+    public ResponseEntity<ResultResponse<List<ReviewResponse>>> findReviewsByKeywordId(@PathVariable Long keywordId, Pageable pageable) {
+        List<ReviewResponse> reviews = reviewService.getReviewsByKeywordId(keywordId, pageable);
+
+        return ResponseEntity.ok()
+                             .body(new ResultResponse<>(HttpStatus.OK, reviews));
+    }
 }
