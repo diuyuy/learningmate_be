@@ -17,10 +17,9 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Optional<Review> findByArticleIdAndMemberId(Long articleId, Long memberId);
 
-    Review findByArticleIdAndMemberId(Long articleId, Long memberId);
 
     Page<Review> findByArticleId(Long articleId, Pageable pageable);
-    
+
     @Query(value = """
             select new org.kc5.learningmate.api.v1.dto.response.ReviewResponse(
                             r.id, r.updatedAt, r.content1, r.member.id
