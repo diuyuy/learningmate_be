@@ -64,7 +64,7 @@ public class ReviewService {
 
 
         return reviewRepository.findByArticleIdAndMemberId(articleId, memberId)
-                .map(ReviewResponse::from)
+                .map(MyReviewResponse::from)
                 .orElse(null);
 
     }
