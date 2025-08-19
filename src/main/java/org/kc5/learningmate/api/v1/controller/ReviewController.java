@@ -44,12 +44,12 @@ public class ReviewController {
 
     @Operation(summary = "기사 상세 리뷰 수정", description = "한 개의 기사에 대해 리뷰를 수정 합니다.")
     @PatchMapping("/articles/{articleId}/reviews/{reviewId}")
-    public ResponseEntity<ResultResponse<Void>> updateReview(@PathVariable("articleId") Long articleId,
+    public ResponseEntity<ResultResponse<MyReviewResponse>> updateReview(@PathVariable("articleId") Long articleId,
                                                              @PathVariable("reviewId") Long reviewId,
                                                              @Valid @RequestBody ReviewUpdateRequest request) {
-        reviewService.updateReview(articleId, reviewId, request);
+        MyReviewResponse response = reviewService.updateReview(articleId, reviewId, request);
         return ResponseEntity
-                .ok(new ResultResponse<>());
+                .ok(new ResultResponse<>(response));
     }
 
     // TODO: 로그인 구현 후, 인증 사용자(memberId)가 해당 리뷰의 작성자인지 검증
