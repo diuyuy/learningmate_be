@@ -5,12 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.LoginRequest;
 import org.kc5.learningmate.api.v1.dto.request.SignUpRequest;
 import org.kc5.learningmate.common.ResultResponse;
+import org.kc5.learningmate.domain.auth.service.AuthService;
 import org.kc5.learningmate.domain.member.service.MemberService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,21 +21,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class AuthController {
-    private final AuthenticationManager authenticationManager;
+    private final AuthService authService;
     private final MemberService memberService;
 
     @PostMapping("/login")
     public ResponseEntity<String> signInByEmailPwd(@Valid @RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.email(),
-                        loginRequest.password()));
+        String accessToken = authService.signInByEmailPwd(loginRequest);
 
-        if (authentication.isAuthenticated()) {
-            return ResponseEntity.ok(authentication.getName());
-        }
+        ResponseCookie responseCookie = ResponseCookie.from("accessToken", accessToken)
+                                                      .httpOnly(true)
+                                                      .path("/")
+                                                      .maxAge(5 * 60)
+                                                      .build();
 
-        return ResponseEntity.notFound()
+        System.out.println("accessToken: " + accessToken);
+        return ResponseEntity.ok()
+                             .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                              .build();
     }
 

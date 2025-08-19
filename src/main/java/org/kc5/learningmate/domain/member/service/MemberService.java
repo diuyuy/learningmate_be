@@ -2,6 +2,8 @@ package org.kc5.learningmate.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.SignUpRequest;
+import org.kc5.learningmate.common.exception.CommonException;
+import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.member.entity.Member;
 import org.kc5.learningmate.domain.member.repository.MemberRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,5 +26,12 @@ public class MemberService {
                                  .status(false)
                                  .build();
         memberRepository.save(newMember);
+    }
+
+    @Transactional(readOnly = true)
+    public Long getMemberId(String email) {
+        return memberRepository.findIdByEmail(email)
+                               .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
     }
 }

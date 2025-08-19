@@ -1,7 +1,9 @@
 package org.kc5.learningmate.config;
 
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.kc5.learningmate.domain.auth.filter.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -24,12 +27,18 @@ import java.util.List;
 @Configuration
 @Log4j2
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class MemberSecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         log.info("Security Filter Chain");
 
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.formLogin(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .csrf(AbstractHttpConfigurer::disable)
             .cors(config -> config.configurationSource(corsConfigurationSource()))
             .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth ->
@@ -37,8 +46,7 @@ public class MemberSecurityConfig {
                         .permitAll()
                         .anyRequest()
                         .authenticated())
-            .formLogin(AbstractHttpConfigurer::disable)
-            .httpBasic(AbstractHttpConfigurer::disable);
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

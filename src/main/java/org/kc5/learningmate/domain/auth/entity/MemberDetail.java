@@ -1,12 +1,21 @@
-package org.kc5.learningmate.api.v1.dto.response;
+package org.kc5.learningmate.domain.auth.entity;
 
+import lombok.Builder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
-public record MemberDetailResponse(String email, String passwordHash) implements UserDetails {
+@Builder
+public record MemberDetail(Long id, String email, String passwordHash) implements UserDetails {
+    public static MemberDetail from(Long id, String email) {
+        return MemberDetail.builder()
+                           .id(id)
+                           .email(email)
+                           .build();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
@@ -20,5 +29,9 @@ public record MemberDetailResponse(String email, String passwordHash) implements
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public Long getMemberId() {
+        return id;
     }
 }
