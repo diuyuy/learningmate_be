@@ -31,7 +31,7 @@ public class AuthController {
         ResponseCookie responseCookie = ResponseCookie.from("accessToken", accessToken)
                                                       .httpOnly(true)
                                                       .path("/")
-                                                      .maxAge(5 * 60)
+                                                      .maxAge((long) 5 * 60)
                                                       .build();
 
         System.out.println("accessToken: " + accessToken);

@@ -18,7 +18,7 @@ public class Member extends BaseEntity {
     @Column(name = "nickname", unique = true, length = 50)
     private String nickname;
 
-    @Column(name = "password_hash", nullable = false, length = 60)
+    @Column(name = "password_hash", length = 60)
     private String passwordHash;
 
     @Column(name = "image_url")

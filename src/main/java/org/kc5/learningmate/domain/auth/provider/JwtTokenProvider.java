@@ -32,8 +32,7 @@ public class JwtTokenProvider {
         this.accessTokenExpiration = accessTokenExpiration;
     }
 
-    public String generateToken(Authentication authentication, Long memberId) {
-        String email = authentication.getName();
+    public String generateToken(String email, Long memberId) {
         long now = (new Date()).getTime();
         Date accessTokenExpirationTime = new Date(now + accessTokenExpiration);
 

@@ -4,6 +4,8 @@ package org.kc5.learningmate.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.kc5.learningmate.domain.auth.filter.JwtAuthenticationFilter;
+import org.kc5.learningmate.domain.auth.handler.Oauth2SuccessHandler;
+import org.kc5.learningmate.domain.auth.service.MemberOauth2Service;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +33,8 @@ import java.util.List;
 public class MemberSecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final MemberOauth2Service memberOauth2Service;
+    private final Oauth2SuccessHandler oauth2SuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
@@ -46,6 +50,10 @@ public class MemberSecurityConfig {
                         .permitAll()
                         .anyRequest()
                         .authenticated())
+            .oauth2Login(oauth -> oauth.authorizationEndpoint(authorization -> authorization.baseUri("/api/v1/auth/login/oauth2"))
+                                       .redirectionEndpoint(redirection -> redirection.baseUri("/api/v1/auth/login/oauth2/code/*"))
+                                       .userInfoEndpoint(userInfo -> userInfo.userService(memberOauth2Service))
+                                       .successHandler(oauth2SuccessHandler))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

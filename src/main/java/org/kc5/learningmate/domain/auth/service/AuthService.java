@@ -7,7 +7,6 @@ import org.kc5.learningmate.domain.member.service.MemberService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
-    private final PasswordEncoder passwordEncoder;
     private final MemberService memberService;
 
     public String signInByEmailPwd(LoginRequest loginRequest) {
@@ -24,8 +22,9 @@ public class AuthService {
                         loginRequest.email(),
                         loginRequest.password()));
 
+        String email = authentication.getName();
+        Long memberId = memberService.getMemberId(email);
 
-        Long memberId = memberService.getMemberId(loginRequest.email());
-        return jwtTokenProvider.generateToken(authentication, memberId);
+        return jwtTokenProvider.generateToken(email, memberId);
     }
 }
