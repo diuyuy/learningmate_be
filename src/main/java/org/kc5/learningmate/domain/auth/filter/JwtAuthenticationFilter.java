@@ -25,7 +25,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("do Oauth FilterInternal: ");
+        System.out.println("do auth FilterInternal: ");
+
+        String requestURI = request.getRequestURI();
+        System.out.println("requestURI: " + requestURI);
+        // 2. 현재 요청이 제외할 URI에 해당하는지 확인합니다.
+        if (requestURI.startsWith("/api/v1/auth")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String accessToken = resolveTokenFromHeader(request);
 
         if (StringUtils.hasText(accessToken) && jwtTokenProvider.validateToken(accessToken)) {
@@ -37,18 +46,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-//    private String resolveToken(HttpServletRequest req) {
-//        String bearerToken = req.getHeader("Authorization");
-//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-//            return bearerToken.substring(7);
-//        }
-//        return null;
-//    }
-
     private String resolveTokenFromHeader(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
-        System.out.println("cookies: " + Arrays.toString(cookies));
         if (cookies == null) {
             throw new CommonException(ErrorCode.UNAUTHORIZED);
         }

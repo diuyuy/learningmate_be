@@ -9,9 +9,11 @@ import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
 import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.article.service.ArticleService;
+import org.kc5.learningmate.domain.auth.entity.MemberDetail;
 import org.kc5.learningmate.domain.review.service.ReviewService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +35,8 @@ public class ArticleController {
     }
 
     @GetMapping("/{articleId}")
-    public ResponseEntity<ResultResponse<ArticleResponse>> findArticleResponseById(@PathVariable("articleId") Long articleId) {
+    public ResponseEntity<ResultResponse<ArticleResponse>> findArticleResponseById(@PathVariable("articleId") Long articleId, @AuthenticationPrincipal MemberDetail memberDetail) {
+        System.out.println("인증된 사용자: " + memberDetail);
         return ResponseEntity
                 .ok(new ResultResponse<>(articleService.findById(articleId)));
     }

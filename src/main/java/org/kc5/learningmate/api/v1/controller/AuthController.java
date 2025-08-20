@@ -24,17 +24,18 @@ public class AuthController {
     private final AuthService authService;
     private final MemberService memberService;
 
-    @PostMapping("/login")
+    @PostMapping("/sign-in")
     public ResponseEntity<String> signInByEmailPwd(@Valid @RequestBody LoginRequest loginRequest) {
         String accessToken = authService.signInByEmailPwd(loginRequest);
 
         ResponseCookie responseCookie = ResponseCookie.from("accessToken", accessToken)
                                                       .httpOnly(true)
                                                       .path("/")
+                                                      .secure(true)
+                                                      .sameSite("none")
                                                       .maxAge((long) 5 * 60)
                                                       .build();
 
-        System.out.println("accessToken: " + accessToken);
         return ResponseEntity.ok()
                              .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                              .build();
