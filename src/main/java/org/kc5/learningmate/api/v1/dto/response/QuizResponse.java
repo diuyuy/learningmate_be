@@ -16,6 +16,9 @@ import java.util.List;
 @Schema(description = "퀴즈 조회/채점 응답 모델")
 public class QuizResponse {
 
+    @Schema(description = "퀴즈 번호")
+    private Long id;
+
     @Schema(description = "퀴즈 문제")
     private String description;
 
@@ -43,6 +46,7 @@ public class QuizResponse {
     public static List<QuizResponse> from(List<Quiz> quizzes) {
         return quizzes.stream()
                 .map(q -> QuizResponse.builder()
+                        .id(q.getId())
                         .description(q.getDescription())
                         .question1(q.getQuestion1())
                         .question2(q.getQuestion2())
