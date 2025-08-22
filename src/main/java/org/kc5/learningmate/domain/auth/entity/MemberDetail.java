@@ -9,10 +9,9 @@ import java.util.List;
 
 @Builder
 public record MemberDetail(Long id, String email, String passwordHash) implements UserDetails {
-    public static MemberDetail from(Long id, String email) {
+    public static MemberDetail from(Long id) {
         return MemberDetail.builder()
                            .id(id)
-                           .email(email)
                            .build();
     }
 

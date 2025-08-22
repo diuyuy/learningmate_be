@@ -2,11 +2,12 @@ package org.kc5.learningmate.domain.auth.provider;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.auth.entity.MemberDetail;
-import org.springframework.beans.factory.annotation.Value;
+import org.kc5.learningmate.domain.auth.properties.AuthProperties;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,27 +20,29 @@ import java.util.Date;
 @Slf4j
 @Component
 public class JwtTokenProvider {
-    private final SecretKey key;
-    private final long accessTokenExpiration;
+    private final AuthProperties authProperties;
+    private SecretKey key;
+    private long accessTokenExpiration;
 
-    public JwtTokenProvider(
-            @Value("${jwt.secret}") String secretKey,
-            @Value("${jwt.access-token-expiration}") long accessTokenExpiration
-    ) {
-        byte[] keyBytes = Base64.getDecoder()
-                                .decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
-        this.accessTokenExpiration = accessTokenExpiration;
+    public JwtTokenProvider(AuthProperties authProperties) {
+        this.authProperties = authProperties;
     }
 
-    public String generateToken(String email, Long memberId) {
-        long now = (new Date()).getTime();
-        Date accessTokenExpirationTime = new Date(now + accessTokenExpiration);
+    @PostConstruct
+    public void init() {
+        byte[] keyBytes = Base64.getDecoder()
+                                .decode(authProperties.getSecret());
+        this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.accessTokenExpiration = authProperties.getExpirationMills();
+    }
+
+    public String generateToken(Long memberId) {
+        Date now = new Date();
+        Date accessTokenExpirationTime = new Date(now.getTime() + accessTokenExpiration);
 
         return Jwts.builder()
                    .subject(memberId.toString())
                    .expiration(accessTokenExpirationTime)
-                   .claim("email", email)
                    .signWith(key)
                    .compact();
 
@@ -48,11 +51,10 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
         Long memberId = Long.parseLong(claims.getSubject());
-        String email = claims.get("email")
-                             .toString();
-        UserDetails principal = MemberDetail.from(memberId, email);
 
-        return new UsernamePasswordAuthenticationToken(principal, email, principal.getAuthorities());
+        UserDetails principal = MemberDetail.from(memberId);
+
+        return new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
     }
 
     public boolean validateToken(String token) {

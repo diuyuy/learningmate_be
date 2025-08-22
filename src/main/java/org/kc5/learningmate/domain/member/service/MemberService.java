@@ -1,8 +1,8 @@
 package org.kc5.learningmate.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.kc5.learningmate.api.v1.dto.request.Oauth2Request;
 import org.kc5.learningmate.api.v1.dto.request.SignUpRequest;
+import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.member.entity.Member;
@@ -29,24 +29,18 @@ public class MemberService {
         memberRepository.save(newMember);
     }
 
-    @Transactional
-    public void createMember(Oauth2Request oauth2Request) {
-        Member newMember = Member.builder()
-                                 .email(oauth2Request.email())
-                                 .build();
-
-        memberRepository.save(newMember);
-    }
-
     @Transactional(readOnly = true)
-    public Long getMemberId(String email) {
-        return memberRepository.findIdByEmail(email)
+    public MemberResponse findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                               .map(MemberResponse::from)
                                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
-
     }
 
     @Transactional(readOnly = true)
-    public boolean existsByEmail(String email) {
-        return memberRepository.existsByEmail(email);
+    public MemberResponse findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                               .map(MemberResponse::from)
+                               .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
     }
+
 }

@@ -6,7 +6,9 @@ import lombok.extern.log4j.Log4j2;
 import org.kc5.learningmate.domain.auth.filter.JwtAuthenticationFilter;
 import org.kc5.learningmate.domain.auth.handler.MemberAuthenticationEntryPoint;
 import org.kc5.learningmate.domain.auth.handler.Oauth2SuccessHandler;
+import org.kc5.learningmate.domain.auth.properties.AuthProperties;
 import org.kc5.learningmate.domain.auth.service.MemberOauth2Service;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +32,7 @@ import java.util.List;
 @Configuration
 @Log4j2
 @EnableWebSecurity
+@EnableConfigurationProperties({AuthProperties.class})
 @RequiredArgsConstructor
 public class MemberSecurityConfig {
 
