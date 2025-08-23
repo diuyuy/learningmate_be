@@ -17,6 +17,8 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN(40102, HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token입니다."),
     INVALID_PIN(40103, HttpStatus.UNAUTHORIZED, "PIN 번호가 올바르지 않습니다."),
     INVALID_AUTH_FORMAT(40104, HttpStatus.UNAUTHORIZED, "유효하지 않은 인증 요청 형식입니다."),
+    INVALID_TOKEN(40105, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다."),
+    ACCESS_TOKEN_EXPIRED(40106, HttpStatus.UNAUTHORIZED, "액세스 토큰이 만료 됐습니다."),
 
     //403
     FORBIDDEN(40300, HttpStatus.FORBIDDEN, "요청 권한이 없습니다."),
@@ -32,6 +34,7 @@ public enum ErrorCode {
     VIDEO_BY_KEYWORD_ID_NOT_FOUND(40407, HttpStatus.NOT_FOUND, "해당 키워드와 연관된 영상이 존재하지 않습니다."),
     QUIZ_NOT_FOUND(40408, HttpStatus.NOT_FOUND, "퀴즈가 존재하지 않습니다."),
     ARTICLE_BY_KEYWORD_ID_NOT_FOUND(40408, HttpStatus.NOT_FOUND, "해당 키워드와 연관된 기사가 존재하지 않습니다."),
+    EMAIL_NOT_FOUND(40409, HttpStatus.NOT_FOUND, "해당 이메일을 가진 사용자가 존재하지 않습니다."),
 
     //409
     DUPLICATE_REVIEW(40900, HttpStatus.CONFLICT, "기사에 대한 리뷰를 이미 작성했습니다."),

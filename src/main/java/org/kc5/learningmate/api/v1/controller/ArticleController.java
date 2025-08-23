@@ -33,7 +33,7 @@ public class ArticleController {
     }
 
     @GetMapping("/{articleId}")
-    public ResponseEntity<ResultResponse<ArticleResponse>> findArticleResponseById(@PathVariable("articleId") Long articleId) {
+    public ResponseEntity<ResultResponse<ArticleResponse>> findArticleById(@PathVariable("articleId") Long articleId) {
         return ResponseEntity
                 .ok(new ResultResponse<>(articleService.findById(articleId)));
     }
