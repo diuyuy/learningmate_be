@@ -11,4 +11,5 @@ public class AuthProperties {
     private String secret;
     private long expirationMills;
     private String sameSite;
+    private long refreshTokenExpirationDays;
 }
