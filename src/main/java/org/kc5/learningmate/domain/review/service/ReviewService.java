@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewCreateRequest;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
-import org.kc5.learningmate.api.v1.dto.response.LikeReviewResponse;
-import org.kc5.learningmate.api.v1.dto.response.MyReviewResponse;
-import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.LikeReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.MyReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.PageReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.ReviewResponse;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.article.entity.Article;
@@ -157,6 +158,11 @@ public class ReviewService {
     public LikeReviewResponse getReviewCount(Long reviewId) {
        Long reviewCount =  likeReviewRepository.countByReviewId(reviewId);
        return LikeReviewResponse.from(reviewId, reviewCount);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PageReviewResponse> getMyReviews(Long memberId, Pageable pageable) {
+        return reviewRepository.getAllByMemberId(memberId, pageable);
     }
 
 }

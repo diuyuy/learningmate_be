@@ -2,6 +2,7 @@ package org.kc5.learningmate.api.v1.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.response.*;
+import org.kc5.learningmate.api.v1.dto.response.review.ReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.article.service.ArticleService;
 import org.kc5.learningmate.domain.keyword.service.KeywordService;

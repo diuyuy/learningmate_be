@@ -1,4 +1,4 @@
-package org.kc5.learningmate.api.v1.dto.response;
+package org.kc5.learningmate.api.v1.dto.response.review;
 
 import jakarta.validation.constraints.NotNull;
 import org.kc5.learningmate.domain.review.entity.Review;
