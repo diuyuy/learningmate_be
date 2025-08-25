@@ -33,14 +33,14 @@ public class ReviewService {
     private final LikeReviewRepository likeReviewRepository;
 
     @Transactional
-    public void createReview(Long articleId, ReviewCreateRequest request) {
-        Member member = memberRepository.findById(request.getMemberId())
+    public void createReview(Long articleId, ReviewCreateRequest request, Long memberId) {
+        Member member = memberRepository.findById(memberId)
                                         .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         Article article = articleRepository.findById(articleId)
                                            .orElseThrow(() -> new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
 
-        hasWrittenReview(member.getId(), article.getId());
+        hasWrittenReview(memberId, article.getId());
 
         reviewRepository.save(ReviewCreateRequest.from(request, member, article));
     }
@@ -70,8 +70,8 @@ public class ReviewService {
     }
 
     @Transactional
-    public MyReviewResponse updateReview(Long articleId, Long reviewId, ReviewUpdateRequest request) {
-        memberRepository.findById(request.getMemberId())
+    public MyReviewResponse updateReview(Long articleId, Long reviewId, ReviewUpdateRequest request, Long memberId) {
+        memberRepository.findById(memberId)
                         .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
         Review review = reviewRepository.findById(reviewId)
@@ -94,20 +94,27 @@ public class ReviewService {
   
 
     @Transactional
-    public void deleteReview(Long articleId, Long reviewId) {
+    public void deleteReview(Long articleId, Long reviewId, Long memberId) {
 
         Article article = articleRepository.findById(articleId).orElseThrow(() ->
                 new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
 
-       
 
         Review review = reviewRepository.findById(reviewId)
                                         .orElseThrow(() ->
                                                 new CommonException(ErrorCode.REVIEW_NOT_FOUND));
 
+        // 해당 기사에 대한 리뷰인지 확인
         if (!review.getArticle()
                    .getId()
                    .equals(article.getId())) {
+            throw new CommonException(ErrorCode.FORBIDDEN);
+        }
+
+        // 해당 사용자의 리뷰인지 확인
+        if (!review.getMember()
+                .getId()
+                .equals(memberId)){
             throw new CommonException(ErrorCode.FORBIDDEN);
         }
         reviewRepository.deleteById(reviewId);

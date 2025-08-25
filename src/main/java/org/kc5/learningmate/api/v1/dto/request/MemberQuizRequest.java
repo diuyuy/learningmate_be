@@ -13,12 +13,6 @@ import lombok.Getter;
 @Schema(description = "퀴즈 풀이 요청 모델")
 public class MemberQuizRequest {
 
-    // TODO: 로그인 구현 시 삭제 예정
-    @NotNull(message = "memberId를 입력해주세요.")
-    @Schema(description = "사용자",
-            example = "1")
-    private Long memberId;
-
     @NotBlank(message = "answer를 입력해주세요.")
     @Schema(description = "퀴즈 답",
             example = "1")

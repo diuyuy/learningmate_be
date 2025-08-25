@@ -66,10 +66,9 @@ public class ArticleService {
     }
 
     @Transactional
-    public QuizResponse solveQuiz(Long articleId, Long quizId, MemberQuizRequest req) {
+    public QuizResponse solveQuiz(Long articleId, Long quizId, MemberQuizRequest req, Long memberId) {
 
-        // TODO : 로그인 기능 구현 시 변경 예정
-        Member member = memberRepository.findById(req.getMemberId()).orElseThrow(() ->
+        Member member = memberRepository.findById(memberId).orElseThrow(() ->
                 new CommonException(ErrorCode.MEMBER_NOT_FOUND)
         );
 
@@ -80,7 +79,7 @@ public class ArticleService {
         Quiz quiz = quizRepository.findById(quizId)
                 .orElseThrow(() -> new CommonException(ErrorCode.QUIZ_NOT_FOUND));
 
-        boolean isExist = memberQuizRepository.existsSolved(quizId, req.getMemberId());
+        boolean isExist = memberQuizRepository.existsSolved(quizId, memberId);
 
         boolean isCorrect = java.util.Objects.equals(quiz.getAnswer(), req.getMemberAnswer());
 
@@ -93,7 +92,7 @@ public class ArticleService {
             memberQuizRepository.save(newMemberQuiz);
         }
         else {
-            memberQuizRepository.updateAnswer(quizId, req.getMemberId(), req.getMemberAnswer());
+            memberQuizRepository.updateAnswer(quizId, memberId, req.getMemberAnswer());
         }
 
         return QuizResponse.from(quiz, isCorrect, req.getMemberAnswer());

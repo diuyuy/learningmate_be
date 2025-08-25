@@ -13,11 +13,6 @@ import lombok.Getter;
 @Schema(description = "리뷰 수정 요청 모델")
 public class ReviewUpdateRequest {
 
-    // 로그인 구현시 삭제 예정
-    @NotNull(message = "member id는 null이 될 수 없습니다.")
-    @Schema(description = "회원 ID", example = "1")
-    private Long memberId;
-
     @NotBlank(message = "content1를 입력해주세요.")
     @Schema(description = "기사에 대한 내 생각",
             example = "주택 공시가격 상승이 보유세 증가로 이어지는 것은 자연스러운 현상이지만, " +

@@ -9,9 +9,11 @@ import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
 import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.article.service.ArticleService;
+import org.kc5.learningmate.domain.auth.entity.MemberDetail;
 import org.kc5.learningmate.domain.review.service.ReviewService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,8 +44,9 @@ public class ArticleController {
     @PostMapping("/{articleId}/quizzes/{quizId}")
     public ResponseEntity<ResultResponse<QuizResponse>> solveQuiz(@PathVariable("articleId") Long articleId,
                                                                   @PathVariable("quizId") Long quizId,
-                                                                  @Valid @RequestBody MemberQuizRequest req) {
-        QuizResponse response = articleService.solveQuiz(articleId, quizId, req);
+                                                                  @Valid @RequestBody MemberQuizRequest req,
+                                                                  @AuthenticationPrincipal MemberDetail memberDetail) {
+        QuizResponse response = articleService.solveQuiz(articleId, quizId, req, memberDetail.getMemberId());
         return ResponseEntity
                 .ok(new ResultResponse<>(response));
     }
