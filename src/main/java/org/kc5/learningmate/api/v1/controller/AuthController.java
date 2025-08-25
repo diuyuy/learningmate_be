@@ -2,9 +2,12 @@ package org.kc5.learningmate.api.v1.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
-import org.kc5.learningmate.api.v1.dto.request.LoginRequest;
-import org.kc5.learningmate.api.v1.dto.request.SignUpRequest;
+import org.kc5.learningmate.api.v1.dto.request.auth.AuthCodeRequest;
+import org.kc5.learningmate.api.v1.dto.request.auth.EmailRequest;
+import org.kc5.learningmate.api.v1.dto.request.auth.LoginRequest;
+import org.kc5.learningmate.api.v1.dto.request.auth.SignUpRequest;
 import org.kc5.learningmate.api.v1.dto.response.LoginResult;
 import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
 import org.kc5.learningmate.api.v1.dto.response.TokenResponse;
@@ -16,10 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RequestMapping("/api/v1/auth")
@@ -41,9 +41,33 @@ public class AuthController {
                              .body(new ResultResponse<>(loginResult.memberResponse()));
     }
 
+
     @PostMapping("/sign-up")
     ResponseEntity<ResultResponse<Void>> signUp(@Valid @RequestBody SignUpRequest signUpRequest) {
-        memberService.createMember(signUpRequest);
+        authService.signUp(signUpRequest);
+        return ResponseEntity.ok()
+                             .body(new ResultResponse<>(HttpStatus.OK));
+    }
+
+    @GetMapping("/emails/existence")
+    ResponseEntity<ResultResponse<Boolean>> checkEmailExists(@RequestParam @Email String email) {
+        boolean isExist = authService.checkEmailExists(email);
+
+        return ResponseEntity.ok()
+                             .body(new ResultResponse<>(HttpStatus.OK, isExist));
+    }
+
+    @PostMapping("/send-auth-code")
+    ResponseEntity<ResultResponse<Void>> sendAuthCode(@Valid @RequestBody EmailRequest emailRequest) {
+        authService.sendAuthCodeMail(emailRequest.email());
+
+        return ResponseEntity.ok()
+                             .body(new ResultResponse<>(HttpStatus.OK));
+    }
+
+    @PostMapping("/auth-code/validate")
+    ResponseEntity<ResultResponse<Void>> validateAuthCode(@Valid @RequestBody AuthCodeRequest authCodeRequest) {
+        authService.validateAuthCode(authCodeRequest.email(), authCodeRequest.authCode());
 
         return ResponseEntity.ok()
                              .body(new ResultResponse<>(HttpStatus.OK));

@@ -27,7 +27,7 @@ public class MemberOauth2Service extends DefaultOAuth2UserService {
 
         memberRepository.save(Member.builder()
                                     .email(email)
-                                    .status(false)
+                                    .status(true)
                                     .build());
 
         return oAuth2User;

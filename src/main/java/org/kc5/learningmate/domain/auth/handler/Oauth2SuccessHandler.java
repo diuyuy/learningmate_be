@@ -1,6 +1,5 @@
 package org.kc5.learningmate.domain.auth.handler;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,7 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
     private final RefreshTokenService refreshTokenService;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         OAuth2User oauth2User = (OAuth2User) authentication.getPrincipal();
 
         String email = oauth2User.getAttribute("email");
@@ -35,8 +34,8 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
         Long id = memberRepository.findIdByEmail(email)
                                   .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-        String accessToken = jwtTokenProvider.generateToken(id);
 
+        String accessToken = jwtTokenProvider.generateToken(id);
         String refreshToken = refreshTokenService.generateRefreshToken(id);
 
         ResponseCookie accessTokenCookie = httpCookieProvider.generateAccessTokenCookie(accessToken);

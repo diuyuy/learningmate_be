@@ -1,7 +1,7 @@
 package org.kc5.learningmate.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.kc5.learningmate.api.v1.dto.request.SignUpRequest;
+import org.kc5.learningmate.api.v1.dto.request.auth.SignUpRequest;
 import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
@@ -19,12 +19,11 @@ public class MemberService {
 
     @Transactional
     public void createMember(SignUpRequest signUpRequest) {
-        //TODO: 이메일 전송 로직 필요
         String password = passwordEncoder.encode(signUpRequest.password());
         Member newMember = Member.builder()
                                  .email(signUpRequest.email())
                                  .passwordHash(password)
-                                 .status(false)
+                                 .status(true)
                                  .build();
         memberRepository.save(newMember);
     }
@@ -41,6 +40,11 @@ public class MemberService {
         return memberRepository.findByEmail(email)
                                .map(MemberResponse::from)
                                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkEmailExists(String email) {
+        return memberRepository.existsByEmail(email);
     }
 
 }

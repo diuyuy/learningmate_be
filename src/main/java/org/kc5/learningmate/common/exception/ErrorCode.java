@@ -10,6 +10,7 @@ public enum ErrorCode {
 
     //400
     BAD_REQUEST(40000, HttpStatus.BAD_REQUEST, "잘못된 요청 형식입니다."),
+    AUTH_CODE_INVALID(40001, HttpStatus.BAD_REQUEST, "유효하지 않은 인증코드 입니다."),
 
     //401
     UNAUTHORIZED(40100, HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),
@@ -40,7 +41,8 @@ public enum ErrorCode {
     DUPLICATE_REVIEW(40900, HttpStatus.CONFLICT, "기사에 대한 리뷰를 이미 작성했습니다."),
 
     // 500
-    INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버내부 오류입니다.");
+    INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버내부 오류입니다."),
+    SEND_EMAIL_FAIL(50001, HttpStatus.INTERNAL_SERVER_ERROR, "이메일 발송을 실패했습니다.");
 
     private final Integer code;
     private final HttpStatus httpStatus;
