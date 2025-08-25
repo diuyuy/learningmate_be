@@ -16,7 +16,6 @@ class MemberDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        System.out.println("loadUserByUsername: " + username);
         return memberRepository.findMemberDetailByEmail(username)
                                .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 

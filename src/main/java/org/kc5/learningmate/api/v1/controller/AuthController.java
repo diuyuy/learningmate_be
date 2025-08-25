@@ -1,12 +1,13 @@
 package org.kc5.learningmate.api.v1.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.LoginRequest;
 import org.kc5.learningmate.api.v1.dto.request.SignUpRequest;
 import org.kc5.learningmate.api.v1.dto.response.LoginResult;
 import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
+import org.kc5.learningmate.api.v1.dto.response.TokenResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.auth.provider.HttpCookieProvider;
 import org.kc5.learningmate.domain.auth.service.AuthService;
@@ -33,7 +34,7 @@ public class AuthController {
     public ResponseEntity<ResultResponse<MemberResponse>> signInByEmailPwd(@Valid @RequestBody LoginRequest loginRequest) {
         LoginResult loginResult = authService.signInByEmailPwd(loginRequest);
 
-        ResponseCookie responseCookie = httpCookieProvider.generateCookie(loginResult.accessToken());
+        ResponseCookie responseCookie = httpCookieProvider.generateAccessTokenCookie(loginResult.accessToken());
 
         return ResponseEntity.ok()
                              .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
@@ -49,11 +50,34 @@ public class AuthController {
     }
 
     @PostMapping("/sign-out")
-    ResponseEntity<ResultResponse<Void>> logout(HttpServletResponse response) {
-        ResponseCookie logoutCookie = httpCookieProvider.createSignOutCookie("accessToken");
+    ResponseEntity<ResultResponse<Void>> signOut(HttpServletRequest request) {
+        String refreshToken = httpCookieProvider.getRefreshToken(request);
+        authService.signOut(refreshToken);
+
+        ResponseCookie signOutAccessTokenCookie = httpCookieProvider.createSignOutCookie("accessToken");
+
+        ResponseCookie signOutRefreshTokenCookie = httpCookieProvider.createSignOutCookie("refreshToken");
 
         return ResponseEntity.ok()
-                             .header(HttpHeaders.SET_COOKIE, logoutCookie.toString())
+                             .header(HttpHeaders.SET_COOKIE, signOutAccessTokenCookie.toString())
+                             .header(HttpHeaders.SET_COOKIE, signOutRefreshTokenCookie.toString())
+                             .body(new ResultResponse<>(HttpStatus.OK));
+    }
+
+    @PostMapping("/refresh-token")
+    ResponseEntity<ResultResponse<Void>> refreshToken(HttpServletRequest request) {
+        String refreshToken = httpCookieProvider.getRefreshToken(request);
+
+        TokenResponse tokenResponse = authService.refreshToken(refreshToken);
+
+        ResponseCookie accessTokenCookie = httpCookieProvider.generateAccessTokenCookie(tokenResponse.accessToken());
+
+        ResponseCookie refreshTokenCookie = httpCookieProvider.generateRefreshTokenCookie(tokenResponse.refreshTokens());
+
+
+        return ResponseEntity.ok()
+                             .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
+                             .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
                              .body(new ResultResponse<>(HttpStatus.OK));
     }
 }
