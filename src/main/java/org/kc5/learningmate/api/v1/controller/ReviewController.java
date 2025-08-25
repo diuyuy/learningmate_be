@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewCreateRequest;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
+import org.kc5.learningmate.api.v1.dto.response.LikeReviewResponse;
 import org.kc5.learningmate.api.v1.dto.response.MyReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.auth.entity.MemberDetail;
@@ -81,4 +82,12 @@ public class ReviewController {
         return ResponseEntity
                 .ok(new ResultResponse<>());
     }
+
+    @Operation(summary = "리뷰 좋아요 수 조회", description = "한 개의 리뷰에 대한 좋아요 수를 카운트 합니다.")
+    @GetMapping("/reviews/{reviewId}/likes/count")
+    public ResponseEntity<ResultResponse<LikeReviewResponse>> getReviewCount(@PathVariable("reviewId") Long reviewId) {
+        return ResponseEntity
+                .ok(new ResultResponse<>(reviewService.getReviewCount(reviewId)));
+    }
+
 }

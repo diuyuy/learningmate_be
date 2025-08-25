@@ -22,4 +22,5 @@ public record ReviewResponse(Long id,
                       .getId()
         );
     }
+
 }
