@@ -26,4 +26,6 @@ public interface LikeReviewRepository extends JpaRepository<LikeReview, Long> {
     """)
     int deleteDirect(@Param("reviewId") Long reviewId, @Param("memberId") Long memberId);
 
+    @Query("SELECT COUNT(lr) FROM LikeReview lr WHERE lr.review.id = :reviewId")
+    Long countByReviewId(@Param("reviewId") Long reviewId);
 }
