@@ -50,14 +50,17 @@ public class AuthController {
     }
 
     @PostMapping("/sign-out")
-    ResponseEntity<ResultResponse<Void>> logout() {
-        ResponseCookie logoutAccessTokenCookie = httpCookieProvider.createSignOutCookie("accessToken");
+    ResponseEntity<ResultResponse<Void>> signOut(HttpServletRequest request) {
+        String refreshToken = httpCookieProvider.getRefreshToken(request);
+        authService.signOut(refreshToken);
 
-        ResponseCookie logoutRefreshTokenCookie = httpCookieProvider.createSignOutCookie("refreshToken");
+        ResponseCookie signOutAccessTokenCookie = httpCookieProvider.createSignOutCookie("accessToken");
+
+        ResponseCookie signOutRefreshTokenCookie = httpCookieProvider.createSignOutCookie("refreshToken");
 
         return ResponseEntity.ok()
-                             .header(HttpHeaders.SET_COOKIE, logoutAccessTokenCookie.toString())
-                             .header(HttpHeaders.SET_COOKIE, logoutRefreshTokenCookie.toString())
+                             .header(HttpHeaders.SET_COOKIE, signOutAccessTokenCookie.toString())
+                             .header(HttpHeaders.SET_COOKIE, signOutRefreshTokenCookie.toString())
                              .body(new ResultResponse<>(HttpStatus.OK));
     }
 

@@ -43,6 +43,10 @@ public class AuthService {
 
     }
 
+    public void signOut(String refreshToken) {
+        refreshTokenService.deleteRefreshToken(refreshToken);
+    }
+
     public TokenResponse refreshToken(String refreshToken) {
         Long memberId = refreshTokenService.validateRefreshToken(refreshToken);
 
