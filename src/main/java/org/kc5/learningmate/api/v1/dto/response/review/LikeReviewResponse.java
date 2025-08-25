@@ -1,4 +1,4 @@
-package org.kc5.learningmate.api.v1.dto.response;
+package org.kc5.learningmate.api.v1.dto.response.review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

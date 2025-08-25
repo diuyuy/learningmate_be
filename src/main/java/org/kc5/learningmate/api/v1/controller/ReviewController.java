@@ -6,11 +6,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewCreateRequest;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
-import org.kc5.learningmate.api.v1.dto.response.LikeReviewResponse;
-import org.kc5.learningmate.api.v1.dto.response.MyReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.common.PageResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.LikeReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.MyReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.PageReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.auth.entity.MemberDetail;
 import org.kc5.learningmate.domain.review.service.ReviewService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -88,6 +94,16 @@ public class ReviewController {
     public ResponseEntity<ResultResponse<LikeReviewResponse>> getReviewCount(@PathVariable("reviewId") Long reviewId) {
         return ResponseEntity
                 .ok(new ResultResponse<>(reviewService.getReviewCount(reviewId)));
+    }
+
+    @Operation(summary = "나의 리뷰 목록 조회", description = "나의 리뷰 목록을 조회합니다.")
+    @GetMapping("/reviews/me")
+    public ResponseEntity<ResultResponse<PageResponse<PageReviewResponse>>> getMyReviews(@AuthenticationPrincipal MemberDetail memberDetail,
+                                                                                         @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PageReviewResponse> response = reviewService.getMyReviews(memberDetail.getMemberId(), pageable);
+        PageResponse<PageReviewResponse> body = PageResponse.from(response);
+        return ResponseEntity
+                .ok(new ResultResponse<>(body));
     }
 
 }

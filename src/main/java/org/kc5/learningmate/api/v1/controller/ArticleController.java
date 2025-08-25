@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.MemberQuizRequest;
 import org.kc5.learningmate.api.v1.dto.response.ArticleResponse;
 import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
-import org.kc5.learningmate.api.v1.dto.response.ReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.ReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.article.service.ArticleService;
 import org.kc5.learningmate.domain.auth.entity.MemberDetail;
