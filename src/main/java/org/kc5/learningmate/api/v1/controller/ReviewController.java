@@ -9,6 +9,7 @@ import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
 import org.kc5.learningmate.api.v1.dto.response.common.PageResponse;
 import org.kc5.learningmate.api.v1.dto.response.review.LikeReviewResponse;
 import org.kc5.learningmate.api.v1.dto.response.review.MyReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.PageReviewCountResponse;
 import org.kc5.learningmate.api.v1.dto.response.review.PageReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.auth.entity.MemberDetail;
@@ -96,14 +97,20 @@ public class ReviewController {
                 .ok(new ResultResponse<>(reviewService.getReviewCount(reviewId)));
     }
 
-    @Operation(summary = "나의 리뷰 목록 조회", description = "나의 리뷰 목록을 조회합니다.")
+    @Operation(summary = "나의 리뷰 목록 조회", description = "나의 리뷰 목록을 조회 합니다.")
     @GetMapping("/reviews/me")
     public ResponseEntity<ResultResponse<PageResponse<PageReviewResponse>>> getMyReviews(@AuthenticationPrincipal MemberDetail memberDetail,
                                                                                          @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PageReviewResponse> response = reviewService.getMyReviews(memberDetail.getMemberId(), pageable);
-        PageResponse<PageReviewResponse> body = PageResponse.from(response);
         return ResponseEntity
-                .ok(new ResultResponse<>(body));
+                .ok(new ResultResponse<>(reviewService.getMyReviews(memberDetail.getMemberId(), pageable)));
+    }
+
+    @Operation(summary = "좋아요 수를 포함한 리뷰 목록 조회", description = "좋아요 수를 포함한 리뷰 목록을 조회 합니다.")
+    @GetMapping("/reviews")
+    public ResponseEntity<ResultResponse<PageResponse<PageReviewCountResponse>>> getReviews(@AuthenticationPrincipal MemberDetail memberDetail,
+                                                                                        @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity
+                .ok(new ResultResponse<>(reviewService.getReviews(memberDetail.getMemberId(), pageable)));
     }
 
 }

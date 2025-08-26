@@ -4,10 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewCreateRequest;
 import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
-import org.kc5.learningmate.api.v1.dto.response.review.LikeReviewResponse;
-import org.kc5.learningmate.api.v1.dto.response.review.MyReviewResponse;
-import org.kc5.learningmate.api.v1.dto.response.review.PageReviewResponse;
-import org.kc5.learningmate.api.v1.dto.response.review.ReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.common.PageResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.*;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.article.entity.Article;
@@ -161,8 +159,15 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PageReviewResponse> getMyReviews(Long memberId, Pageable pageable) {
-        return reviewRepository.getAllByMemberId(memberId, pageable);
+    public PageResponse<PageReviewResponse> getMyReviews(Long memberId, Pageable pageable) {
+        Page<PageReviewResponse> pageReview = reviewRepository.getAllByMemberId(memberId, pageable);
+        return PageResponse.from(pageReview);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<PageReviewCountResponse> getReviews(Long memberId, Pageable pageable) {
+        Page<PageReviewCountResponse> pageReviewCount = reviewRepository.getAll(memberId, pageable);
+        return PageResponse.from(pageReviewCount);
     }
 
 }
