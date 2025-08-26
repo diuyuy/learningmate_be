@@ -28,6 +28,10 @@ public class MemberService {
         memberRepository.save(newMember);
     }
 
+    @Transactional
+    public void updateMember() {
+    }
+
     @Transactional(readOnly = true)
     public MemberResponse findMemberById(Long memberId) {
         return memberRepository.findById(memberId)

@@ -6,7 +6,6 @@ import org.kc5.learningmate.api.v1.dto.request.auth.SignUpRequest;
 import org.kc5.learningmate.api.v1.dto.response.LoginResult;
 import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
 import org.kc5.learningmate.api.v1.dto.response.TokenResponse;
-import org.kc5.learningmate.common.constants.EmailConstants;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.auth.provider.JwtTokenProvider;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -66,8 +66,17 @@ public class AuthService {
         int randomNumber = secureRandom.nextInt(1000000);
         String authCode = String.format("%06d", randomNumber);
         stringRedisTemplate.opsForValue()
-                           .set(email, authCode, 10, TimeUnit.MINUTES);
-        emailService.sendMail(email, EmailConstants.EMAIL_SUBJECT, EmailConstants.emailText(authCode));
+                           .set(email, authCode, 3, TimeUnit.MINUTES);
+        emailService.sendAuthCodeMail(email, authCode);
+    }
+
+    public void sendResetPasswordMail(String email) {
+        String authToken = UUID.randomUUID()
+                               .toString();
+        stringRedisTemplate.opsForValue()
+                           .set(email, authToken, 10, TimeUnit.MINUTES);
+
+        emailService.sendResetPasswdMail(email, authToken);
     }
 
     public void validateAuthCode(String email, String authCode) {
