@@ -47,7 +47,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     )
     Page<PageReviewResponse> getAllByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
-    // lr: 좋아요 전체 목록, lrme: 내가 좋아요 한 목록
     @Query(
         value = """
             select new org.kc5.learningmate.api.v1.dto.response.review.PageReviewCountResponse(
