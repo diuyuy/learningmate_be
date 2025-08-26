@@ -11,6 +11,7 @@ public enum ErrorCode {
     //400
     BAD_REQUEST(40000, HttpStatus.BAD_REQUEST, "잘못된 요청 형식입니다."),
     AUTH_CODE_INVALID(40001, HttpStatus.BAD_REQUEST, "유효하지 않은 인증코드 입니다."),
+    AUTH_TOKEN_INVALID(40002, HttpStatus.BAD_REQUEST, "유효하지 않은 인증코드 입니다."),
 
     //401
     UNAUTHORIZED(40100, HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),

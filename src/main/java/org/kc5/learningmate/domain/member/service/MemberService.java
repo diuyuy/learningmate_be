@@ -29,7 +29,12 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember() {
+    public void updatePassword(String email, String password) {
+        Member member = memberRepository.findByEmail(email)
+                                        .orElseThrow(() -> new CommonException(ErrorCode.EMAIL_NOT_FOUND));
+
+        member.updatePassword(passwordEncoder.encode(password));
+
     }
 
     @Transactional(readOnly = true)

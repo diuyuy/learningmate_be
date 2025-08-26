@@ -100,9 +100,17 @@ public class AuthController {
                              .body(new ResultResponse<>(HttpStatus.OK));
     }
 
-    @PostMapping("/reset-passwd")
+    @PostMapping("/passwd-resets")
     public ResponseEntity<ResultResponse<Void>> sendPasswdResetMail(@Valid @RequestBody SendResetPasswdRequest sendResetPasswdRequest) {
         authService.sendResetPasswordMail(sendResetPasswdRequest.email());
+        return ResponseEntity.ok()
+                             .body(new ResultResponse<>(HttpStatus.OK));
+    }
+
+    @PatchMapping("/passwd-resets")
+    public ResponseEntity<ResultResponse<Void>> resetPasswd(@Valid @RequestBody PasswdResetRequest passwdResetRequest) {
+        authService.resetPassword(passwdResetRequest);
+        
         return ResponseEntity.ok()
                              .body(new ResultResponse<>(HttpStatus.OK));
     }
