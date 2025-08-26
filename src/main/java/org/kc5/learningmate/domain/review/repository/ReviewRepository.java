@@ -61,13 +61,15 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
                 )
             from Review r
             left join LikeReview lr on lr.review = r
+            where r.article.id = :articleId
             group by r.id, r.createdAt, r.content1, r.member.nickname, r.article.title
           """,
         countQuery = """
             select count(r)
             from Review r
+            where r.article.id = :articleId
             """
         )
-    Page<PageReviewCountResponse> getAll(@Param("memberId") Long memberId, Pageable pageable);
+    Page<PageReviewCountResponse> getAllByArticleId(@Param("memberId") Long memberId, @Param("articleId") Long articleId, Pageable pageable);
 
 }
