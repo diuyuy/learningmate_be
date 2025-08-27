@@ -3,10 +3,12 @@ package org.kc5.learningmate.api.v1.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.member.MemberUpdateRequest;
-import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
+import org.kc5.learningmate.api.v1.dto.response.member.MemberResponse;
+import org.kc5.learningmate.api.v1.dto.response.member.ProfileImageDto;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.auth.entity.MemberDetail;
 import org.kc5.learningmate.domain.member.service.MemberService;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +30,15 @@ public class MemberController {
         return ResponseEntity.ok()
                              .body(new ResultResponse<>(memberResponse));
 
+    }
+
+    @GetMapping("/profile-images/{memberId}")
+    public ResponseEntity<Resource> getProfileImage(@PathVariable Long memberId) {
+        ProfileImageDto profileImageDto = memberService.getProfileImage(memberId);
+
+        return ResponseEntity.ok()
+                             .contentType(profileImageDto.mediaType())
+                             .body(profileImageDto.image());
     }
 
     @PatchMapping("/me")

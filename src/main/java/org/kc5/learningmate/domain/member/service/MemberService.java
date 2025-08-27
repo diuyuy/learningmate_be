@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.kc5.learningmate.api.v1.dto.request.auth.SignUpRequest;
 import org.kc5.learningmate.api.v1.dto.request.member.MemberUpdateRequest;
-import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
+import org.kc5.learningmate.api.v1.dto.response.member.MemberResponse;
+import org.kc5.learningmate.api.v1.dto.response.member.ProfileImageDto;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.member.entity.Member;
 import org.kc5.learningmate.domain.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +29,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
 
-    @Value("${file.upload-dir}")
-    private String fileUploadDir;
+    @Value("${image.default-image-url}")
+    private String defaultImageUrl;
 
     @Transactional
     public void createMember(SignUpRequest signUpRequest) {
@@ -37,6 +41,39 @@ public class MemberService {
                                  .status(true)
                                  .build();
         memberRepository.save(newMember);
+    }
+
+    @Transactional(readOnly = true)
+    public MemberResponse findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                               .map(MemberResponse::from)
+                               .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public MemberResponse findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email)
+                               .map(MemberResponse::from)
+                               .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkEmailExists(String email) {
+        return memberRepository.existsByEmail(email);
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileImageDto getProfileImage(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                                        .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        String imgUrl = (member.getImageUrl() != null) ? member.getImageUrl() : defaultImageUrl;
+        
+        Resource resource = imageService.getImage(imgUrl);
+        MediaType mediaType = MediaTypeFactory.getMediaType(resource.getFilename())
+                                              .orElseThrow(() -> new CommonException(ErrorCode.LOAD_IMAGE_FAIL));
+
+        return new ProfileImageDto(resource, mediaType);
     }
 
     @Transactional
@@ -83,23 +120,5 @@ public class MemberService {
 
     }
 
-    @Transactional(readOnly = true)
-    public MemberResponse findMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                               .map(MemberResponse::from)
-                               .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
-    }
-
-    @Transactional(readOnly = true)
-    public MemberResponse findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                               .map(MemberResponse::from)
-                               .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
-    }
-
-    @Transactional(readOnly = true)
-    public boolean checkEmailExists(String email) {
-        return memberRepository.existsByEmail(email);
-    }
 
 }
