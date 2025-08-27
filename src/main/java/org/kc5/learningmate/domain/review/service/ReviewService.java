@@ -139,17 +139,9 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewResponse> getReviewsByArticleId(Long articleId, Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findByArticleId(articleId, pageable);
-
-        return reviews.map(ReviewResponse::from)
-                      .getContent();
-    }
-
-    @Transactional(readOnly = true)
-    public List<ReviewResponse> getReviewsByKeywordId(Long keywordId, Pageable pageable) {
-        Page<ReviewResponse> reviews = reviewRepository.findByKeywordId(keywordId, pageable);
-        return reviews.getContent();
+    public PageResponse<PageReviewCountResponse> getReviewsByKeywordId(Long keywordId, Long memberId, Pageable pageable) {
+        Page<PageReviewCountResponse> pageReviewCount = reviewRepository.findByKeywordId(keywordId, memberId, pageable);
+        return PageResponse.from(pageReviewCount);
     }
 
     @Transactional(readOnly = true)
@@ -165,8 +157,8 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<PageReviewCountResponse> getReviews(Long memberId, Pageable pageable) {
-        Page<PageReviewCountResponse> pageReviewCount = reviewRepository.getAll(memberId, pageable);
+    public PageResponse<PageReviewCountResponse> getReviewsByArticleId(Long memberId, Long articleId, Pageable pageable) {
+        Page<PageReviewCountResponse> pageReviewCount = reviewRepository.getAllByArticleId(memberId, articleId, pageable);
         return PageResponse.from(pageReviewCount);
     }
 

@@ -6,12 +6,15 @@ import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.member.MemberQuizRequest;
 import org.kc5.learningmate.api.v1.dto.response.ArticleResponse;
 import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
-import org.kc5.learningmate.api.v1.dto.response.review.ReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.common.PageResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.PageReviewCountResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.article.service.ArticleService;
 import org.kc5.learningmate.domain.auth.entity.MemberDetail;
 import org.kc5.learningmate.domain.review.service.ReviewService;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -51,12 +54,13 @@ public class ArticleController {
                 .ok(new ResultResponse<>(response));
     }
 
+    @Operation(summary = "좋아요 수를 포함한 리뷰 목록 조회", description = "좋아요 수를 포함한 리뷰 목록을 조회 합니다.")
     @GetMapping("/{articleId}/reviews")
-    public ResponseEntity<ResultResponse<List<ReviewResponse>>> findReviewsByArticleId(@PathVariable("articleId") Long articleId, Pageable pageable) {
-        List<ReviewResponse> reviews = reviewService.getReviewsByArticleId(articleId, pageable);
-
+    public ResponseEntity<ResultResponse<PageResponse<PageReviewCountResponse>>> getReviewsByArticleId(@AuthenticationPrincipal MemberDetail memberDetail,
+                                                                                            @PathVariable("articleId") Long articleId,
+                                                                                            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity
-                .ok(new ResultResponse<>(reviews));
+                .ok(new ResultResponse<>(reviewService.getReviewsByArticleId(memberDetail.getMemberId(), articleId, pageable)));
     }
 
 }
