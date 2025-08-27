@@ -37,7 +37,7 @@ public class ReviewService {
         Member member = memberRepository.findById(memberId)
                                         .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
-   cd le     Article article = articleRepository.findById(articleId)
+        Article article = articleRepository.findById(articleId)
                                            .orElseThrow(() -> new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
 
         hasWrittenReview(memberId, article.getId());
