@@ -15,6 +15,8 @@ import org.kc5.learningmate.domain.quiz.entity.MemberQuiz;
 import org.kc5.learningmate.domain.quiz.entity.Quiz;
 import org.kc5.learningmate.domain.quiz.repository.MemberQuizRepository;
 import org.kc5.learningmate.domain.quiz.repository.QuizRepository;
+import org.kc5.learningmate.domain.study.StudyBits;
+import org.kc5.learningmate.domain.study.repository.StudyRepository;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +32,7 @@ public class ArticleService {
     private final MemberQuizRepository memberQuizRepository;
     private final MemberRepository memberRepository;
     private final KeywordService keywordService;
+    private final StudyRepository studyRepository;
 
     @Cacheable(value = "articleQuizzes", key = "#articleId", unless = "#result == null || #result.isEmpty()")
     @Transactional(readOnly = true)
@@ -75,12 +78,12 @@ public class ArticleService {
                                                 new CommonException(ErrorCode.MEMBER_NOT_FOUND)
                                         );
 
-        if (!articleRepository.existsById(articleId)) {
-            throw new CommonException(ErrorCode.ARTICLE_NOT_FOUND);
-        }
-
         Quiz quiz = quizRepository.findById(quizId)
                                   .orElseThrow(() -> new CommonException(ErrorCode.QUIZ_NOT_FOUND));
+
+        if (!quiz.getArticle().getId().equals(articleId)) {
+            throw new CommonException(ErrorCode.BAD_REQUEST);
+        }
 
         boolean isExist = memberQuizRepository.existsSolved(quizId, memberId);
 
@@ -95,6 +98,16 @@ public class ArticleService {
             memberQuizRepository.save(newMemberQuiz);
         } else {
             memberQuizRepository.updateAnswer(quizId, memberId, req.getMemberAnswer());
+        }
+
+        // 내가 푼 개수
+        long solved = memberQuizRepository.countSolvedByArticleAndMember(articleId, memberId);
+        long total = 5L;
+
+        Long keywordId = quizRepository.findKeywordIdByQuizId(quizId);
+        // 모두 풀었을 때만 Study 비트 세팅
+        if (solved == total) {
+            studyRepository.upsertFlag(memberId, keywordId, StudyBits.QUIZ);
         }
 
         return QuizResponse.from(quiz, isCorrect, req.getMemberAnswer());
