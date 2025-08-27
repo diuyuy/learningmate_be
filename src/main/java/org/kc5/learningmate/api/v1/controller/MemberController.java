@@ -32,9 +32,9 @@ public class MemberController {
 
     }
 
-    @GetMapping("/profile-images/{memberId}")
-    public ResponseEntity<Resource> getProfileImage(@PathVariable Long memberId) {
-        ProfileImageDto profileImageDto = memberService.getProfileImage(memberId);
+    @GetMapping("/profile-images/{imgUrl}")
+    public ResponseEntity<Resource> getProfileImage(@PathVariable String imgUrl) {
+        ProfileImageDto profileImageDto = memberService.getProfileImage(imgUrl);
 
         return ResponseEntity.ok()
                              .contentType(profileImageDto.mediaType())
