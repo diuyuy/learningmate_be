@@ -139,9 +139,9 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<ReviewResponse> getReviewsByKeywordId(Long keywordId, Pageable pageable) {
-        Page<ReviewResponse> reviews = reviewRepository.findByKeywordId(keywordId, pageable);
-        return reviews.getContent();
+    public PageResponse<PageReviewCountResponse> getReviewsByKeywordId(Long keywordId, Long memberId, Pageable pageable) {
+        Page<PageReviewCountResponse> pageReviewCount = reviewRepository.findByKeywordId(keywordId, memberId, pageable);
+        return PageResponse.from(pageReviewCount);
     }
 
     @Transactional(readOnly = true)

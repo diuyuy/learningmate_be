@@ -2,15 +2,18 @@ package org.kc5.learningmate.api.v1.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.response.*;
-import org.kc5.learningmate.api.v1.dto.response.review.ReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.common.PageResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.PageReviewCountResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.article.service.ArticleService;
+import org.kc5.learningmate.domain.auth.entity.MemberDetail;
 import org.kc5.learningmate.domain.keyword.service.KeywordService;
 import org.kc5.learningmate.domain.review.service.ReviewService;
 import org.kc5.learningmate.domain.study.service.VideoService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -56,10 +59,11 @@ public class KeywordController {
     }
 
     @GetMapping("/{keywordId}/reviews")
-    public ResponseEntity<ResultResponse<List<ReviewResponse>>> findReviewsByKeywordId(@PathVariable Long keywordId, Pageable pageable) {
-        List<ReviewResponse> reviews = reviewService.getReviewsByKeywordId(keywordId, pageable);
+    public ResponseEntity<ResultResponse<PageResponse<PageReviewCountResponse>>> findReviewsByKeywordId(@PathVariable Long keywordId,
+                                                                                                        @AuthenticationPrincipal MemberDetail memberDetail,
+                                                                                                        Pageable pageable) {
 
         return ResponseEntity.ok()
-                             .body(new ResultResponse<>(HttpStatus.OK, reviews));
+                             .body(new ResultResponse<>(reviewService.getReviewsByKeywordId(keywordId, memberDetail.getMemberId(), pageable)));
     }
 }
