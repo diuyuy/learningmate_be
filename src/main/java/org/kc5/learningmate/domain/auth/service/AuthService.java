@@ -111,7 +111,6 @@ public class AuthService {
     public void resetPassword(PasswdResetRequest passwdResetRequest) {
         String authToken = stringRedisTemplate.opsForValue()
                                               .getAndDelete(passwdResetRequest.email());
-        System.out.println("AuthTOken: " + authToken);
         if (!Objects.equals(authToken, passwdResetRequest.authToken())) {
             throw new CommonException(ErrorCode.AUTH_TOKEN_INVALID);
         }
