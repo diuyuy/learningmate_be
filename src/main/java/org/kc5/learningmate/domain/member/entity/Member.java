@@ -15,7 +15,7 @@ public class Member extends BaseEntity {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "nickname", unique = true, length = 50)
+    @Column(name = "nickname", unique = true, columnDefinition = "VARCHAR(50) COLLATE utf8mb4_bin")
     private String nickname;
 
     @Column(name = "password_hash", length = 60)
@@ -28,7 +28,15 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private Boolean status;
 
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
     public void updatePassword(String password) {
         this.passwordHash = password;
+    }
+
+    public void updateImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

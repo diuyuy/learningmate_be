@@ -1,21 +1,32 @@
 package org.kc5.learningmate.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.kc5.learningmate.api.v1.dto.request.auth.SignUpRequest;
+import org.kc5.learningmate.api.v1.dto.request.member.MemberUpdateRequest;
 import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.member.entity.Member;
 import org.kc5.learningmate.domain.member.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageService imageService;
+
+    @Value("${file.upload-dir}")
+    private String fileUploadDir;
 
     @Transactional
     public void createMember(SignUpRequest signUpRequest) {
@@ -26,6 +37,41 @@ public class MemberService {
                                  .status(true)
                                  .build();
         memberRepository.save(newMember);
+    }
+
+    @Transactional
+    public void updateMember(Long id, MemberUpdateRequest memberUpdateRequest) {
+        Member member = memberRepository.findById(id)
+                                        .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
+
+        String nickname = memberUpdateRequest.nickname();
+        String password = memberUpdateRequest.password();
+        if (nickname != null && !nickname.isEmpty()) {
+            if (memberRepository.existsByNickname(nickname)) {
+                throw new CommonException(ErrorCode.DUPLICATE_NICKNAME);
+            }
+            member.updateNickname(nickname);
+        }
+
+        if (password != null && !password.isEmpty()) {
+            member.updatePassword(passwordEncoder.encode(password));
+        }
+    }
+
+    @Transactional
+    public void updateImage(Long id, MultipartFile imgFile) {
+        Member member = memberRepository.findById(id)
+                                        .orElseThrow(() -> new CommonException(ErrorCode.EMAIL_NOT_FOUND));
+
+        try {
+            String imgUrl = imageService.saveImage(imgFile.getInputStream(), imgFile.getOriginalFilename(), member.getImageUrl());
+
+            member.updateImageUrl(imgUrl);
+        } catch (IOException e) {
+            log.error("getInputStream() 호출 실패: {}", e.getMessage());
+            throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @Transactional
