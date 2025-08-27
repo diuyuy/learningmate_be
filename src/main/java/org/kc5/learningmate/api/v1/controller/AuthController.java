@@ -4,17 +4,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
-import org.kc5.learningmate.api.v1.dto.request.auth.AuthCodeRequest;
-import org.kc5.learningmate.api.v1.dto.request.auth.EmailRequest;
-import org.kc5.learningmate.api.v1.dto.request.auth.LoginRequest;
-import org.kc5.learningmate.api.v1.dto.request.auth.SignUpRequest;
+import org.kc5.learningmate.api.v1.dto.request.auth.*;
 import org.kc5.learningmate.api.v1.dto.response.LoginResult;
 import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
 import org.kc5.learningmate.api.v1.dto.response.TokenResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.auth.provider.HttpCookieProvider;
 import org.kc5.learningmate.domain.auth.service.AuthService;
-import org.kc5.learningmate.domain.member.service.MemberService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -27,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AuthController {
     private final AuthService authService;
-    private final MemberService memberService;
     private final HttpCookieProvider httpCookieProvider;
 
     @PostMapping("/sign-in")
@@ -58,16 +53,16 @@ public class AuthController {
     }
 
     @PostMapping("/send-auth-code")
-    ResponseEntity<ResultResponse<Void>> sendAuthCode(@Valid @RequestBody EmailRequest emailRequest) {
-        authService.sendAuthCodeMail(emailRequest.email());
+    ResponseEntity<ResultResponse<Void>> sendAuthCode(@Valid @RequestBody AuthCodeGetRequest authCodeGetRequest) {
+        authService.sendAuthCodeMail(authCodeGetRequest.email());
 
         return ResponseEntity.ok()
                              .body(new ResultResponse<>(HttpStatus.OK));
     }
 
     @PostMapping("/auth-code/validate")
-    ResponseEntity<ResultResponse<Void>> validateAuthCode(@Valid @RequestBody AuthCodeRequest authCodeRequest) {
-        authService.validateAuthCode(authCodeRequest.email(), authCodeRequest.authCode());
+    ResponseEntity<ResultResponse<Void>> validateAuthCode(@Valid @RequestBody AuthCodeValidateRequest authCodeValidateRequest) {
+        authService.validateAuthCode(authCodeValidateRequest.email(), authCodeValidateRequest.authCode());
 
         return ResponseEntity.ok()
                              .body(new ResultResponse<>(HttpStatus.OK));
@@ -102,6 +97,21 @@ public class AuthController {
         return ResponseEntity.ok()
                              .header(HttpHeaders.SET_COOKIE, accessTokenCookie.toString())
                              .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                             .body(new ResultResponse<>(HttpStatus.OK));
+    }
+
+    @PostMapping("/passwd-resets")
+    public ResponseEntity<ResultResponse<Void>> sendPasswdResetMail(@Valid @RequestBody SendResetPasswdRequest sendResetPasswdRequest) {
+        authService.sendResetPasswordMail(sendResetPasswdRequest.email());
+        return ResponseEntity.ok()
+                             .body(new ResultResponse<>(HttpStatus.OK));
+    }
+
+    @PatchMapping("/passwd-resets")
+    public ResponseEntity<ResultResponse<Void>> resetPasswd(@Valid @RequestBody PasswdResetRequest passwdResetRequest) {
+        authService.resetPassword(passwdResetRequest);
+        
+        return ResponseEntity.ok()
                              .body(new ResultResponse<>(HttpStatus.OK));
     }
 }

@@ -52,7 +52,7 @@ public class MemberSecurityConfig {
             .cors(config -> config.configurationSource(corsConfigurationSource()))
             .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth ->
-                    auth.requestMatchers("/api/v1/auth/**", "/api/v1/oauth2", "/favicon.ico")
+                    auth.requestMatchers("/api/v1/auth/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated())

@@ -1,17 +1,17 @@
 package org.kc5.learningmate.domain.article.service;
 
 import lombok.RequiredArgsConstructor;
-import org.kc5.learningmate.api.v1.dto.request.MemberQuizRequest;
+import org.kc5.learningmate.api.v1.dto.request.member.MemberQuizRequest;
 import org.kc5.learningmate.api.v1.dto.response.ArticlePreviewResponse;
 import org.kc5.learningmate.api.v1.dto.response.ArticleResponse;
 import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.article.repository.ArticleRepository;
+import org.kc5.learningmate.domain.keyword.service.KeywordService;
 import org.kc5.learningmate.domain.member.entity.Member;
 import org.kc5.learningmate.domain.member.repository.MemberRepository;
 import org.kc5.learningmate.domain.quiz.entity.MemberQuiz;
-import org.kc5.learningmate.domain.keyword.service.KeywordService;
 import org.kc5.learningmate.domain.quiz.entity.Quiz;
 import org.kc5.learningmate.domain.quiz.repository.MemberQuizRepository;
 import org.kc5.learningmate.domain.quiz.repository.QuizRepository;
@@ -68,16 +68,17 @@ public class ArticleService {
     @Transactional
     public QuizResponse solveQuiz(Long articleId, Long quizId, MemberQuizRequest req, Long memberId) {
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() ->
-                new CommonException(ErrorCode.MEMBER_NOT_FOUND)
-        );
+        Member member = memberRepository.findById(memberId)
+                                        .orElseThrow(() ->
+                                                new CommonException(ErrorCode.MEMBER_NOT_FOUND)
+                                        );
 
         if (!articleRepository.existsById(articleId)) {
             throw new CommonException(ErrorCode.ARTICLE_NOT_FOUND);
         }
 
         Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new CommonException(ErrorCode.QUIZ_NOT_FOUND));
+                                  .orElseThrow(() -> new CommonException(ErrorCode.QUIZ_NOT_FOUND));
 
         boolean isExist = memberQuizRepository.existsSolved(quizId, memberId);
 
@@ -85,13 +86,12 @@ public class ArticleService {
 
         if (!isExist) {
             MemberQuiz newMemberQuiz = MemberQuiz.builder()
-                    .quiz(quiz)
-                    .member(member)
-                    .memberAnswer(req.getMemberAnswer())
-                    .build();
+                                                 .quiz(quiz)
+                                                 .member(member)
+                                                 .memberAnswer(req.getMemberAnswer())
+                                                 .build();
             memberQuizRepository.save(newMemberQuiz);
-        }
-        else {
+        } else {
             memberQuizRepository.updateAnswer(quizId, memberId, req.getMemberAnswer());
         }
 

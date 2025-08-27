@@ -28,4 +28,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private Boolean status;
 
+    public void updatePassword(String password) {
+        this.passwordHash = password;
+    }
 }

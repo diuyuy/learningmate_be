@@ -12,4 +12,6 @@ public class AuthProperties {
     private long expirationMills;
     private String sameSite;
     private long refreshTokenExpirationDays;
+    private String baseUrl;
+    private String passwdResetUrl;
 }

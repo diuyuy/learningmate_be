@@ -2,11 +2,11 @@ package org.kc5.learningmate.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.auth.LoginRequest;
+import org.kc5.learningmate.api.v1.dto.request.auth.PasswdResetRequest;
 import org.kc5.learningmate.api.v1.dto.request.auth.SignUpRequest;
 import org.kc5.learningmate.api.v1.dto.response.LoginResult;
 import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
 import org.kc5.learningmate.api.v1.dto.response.TokenResponse;
-import org.kc5.learningmate.common.constants.EmailConstants;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.auth.provider.JwtTokenProvider;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -52,6 +53,21 @@ public class AuthService {
 
     }
 
+    public void signOut(String refreshToken) {
+        refreshTokenService.deleteRefreshToken(refreshToken);
+    }
+
+    public TokenResponse refreshToken(String refreshToken) {
+        Long memberId = refreshTokenService.validateRefreshToken(refreshToken);
+
+        String accessToken = jwtTokenProvider.generateToken(memberId);
+        refreshTokenService.deleteRefreshToken(refreshToken);
+        String newRefreshToken = refreshTokenService.generateRefreshToken(memberId);
+
+        return new TokenResponse(accessToken, newRefreshToken);
+    }
+
+    // 회원가입 관련 메서드들
     public void signUp(SignUpRequest signUpRequest) {
         validateAuthCode(signUpRequest.email(), signUpRequest.authCode());
         memberService.createMember(signUpRequest);
@@ -66,8 +82,8 @@ public class AuthService {
         int randomNumber = secureRandom.nextInt(1000000);
         String authCode = String.format("%06d", randomNumber);
         stringRedisTemplate.opsForValue()
-                           .set(email, authCode, 10, TimeUnit.MINUTES);
-        emailService.sendMail(email, EmailConstants.EMAIL_SUBJECT, EmailConstants.emailText(authCode));
+                           .set(email, authCode, 3, TimeUnit.MINUTES);
+        emailService.sendAuthCodeMail(email, authCode);
     }
 
     public void validateAuthCode(String email, String authCode) {
@@ -79,17 +95,27 @@ public class AuthService {
         }
     }
 
-    public void signOut(String refreshToken) {
-        refreshTokenService.deleteRefreshToken(refreshToken);
+    //비밀번호 찾기 및 재설정 관련 메서드들
+    public void sendResetPasswordMail(String email) {
+        if (memberService.checkEmailExists(email)) {
+            throw new CommonException(ErrorCode.EMAIL_NOT_FOUND);
+        }
+        String authToken = UUID.randomUUID()
+                               .toString();
+        stringRedisTemplate.opsForValue()
+                           .set(email, authToken, 10, TimeUnit.MINUTES);
+
+        emailService.sendResetPasswdMail(email, authToken);
     }
 
-    public TokenResponse refreshToken(String refreshToken) {
-        Long memberId = refreshTokenService.validateRefreshToken(refreshToken);
+    public void resetPassword(PasswdResetRequest passwdResetRequest) {
+        String authToken = stringRedisTemplate.opsForValue()
+                                              .getAndDelete(passwdResetRequest.email());
 
-        String accessToken = jwtTokenProvider.generateToken(memberId);
-        refreshTokenService.deleteRefreshToken(refreshToken);
-        String newRefreshToken = refreshTokenService.generateRefreshToken(memberId);
+        if (!Objects.equals(authToken, passwdResetRequest.authToken())) {
+            throw new CommonException(ErrorCode.AUTH_TOKEN_INVALID);
+        }
 
-        return new TokenResponse(accessToken, newRefreshToken);
+        memberService.updatePassword(passwdResetRequest.email(), passwdResetRequest.password());
     }
 }

@@ -28,6 +28,15 @@ public class MemberService {
         memberRepository.save(newMember);
     }
 
+    @Transactional
+    public void updatePassword(String email, String password) {
+        Member member = memberRepository.findByEmail(email)
+                                        .orElseThrow(() -> new CommonException(ErrorCode.EMAIL_NOT_FOUND));
+
+        member.updatePassword(passwordEncoder.encode(password));
+
+    }
+
     @Transactional(readOnly = true)
     public MemberResponse findMemberById(Long memberId) {
         return memberRepository.findById(memberId)

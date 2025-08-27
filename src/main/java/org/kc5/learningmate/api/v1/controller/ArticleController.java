@@ -3,7 +3,7 @@ package org.kc5.learningmate.api.v1.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.kc5.learningmate.api.v1.dto.request.MemberQuizRequest;
+import org.kc5.learningmate.api.v1.dto.request.member.MemberQuizRequest;
 import org.kc5.learningmate.api.v1.dto.response.ArticleResponse;
 import org.kc5.learningmate.api.v1.dto.response.QuizResponse;
 import org.kc5.learningmate.api.v1.dto.response.review.ReviewResponse;
