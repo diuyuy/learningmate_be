@@ -15,6 +15,7 @@ import org.kc5.learningmate.domain.quiz.entity.MemberQuiz;
 import org.kc5.learningmate.domain.quiz.entity.Quiz;
 import org.kc5.learningmate.domain.quiz.repository.MemberQuizRepository;
 import org.kc5.learningmate.domain.quiz.repository.QuizRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class ArticleService {
     private final MemberRepository memberRepository;
     private final KeywordService keywordService;
 
+    @Cacheable(value = "articleQuizzes", key = "#articleId", unless = "#result == null || #result.isEmpty()")
     @Transactional(readOnly = true)
     public List<QuizResponse> getQuizList(Long articleId) {
         if (!articleRepository.existsById(articleId)) {
