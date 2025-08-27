@@ -97,7 +97,7 @@ public class AuthService {
 
     //비밀번호 찾기 및 재설정 관련 메서드들
     public void sendResetPasswordMail(String email) {
-        if (memberService.checkEmailExists(email)) {
+        if (!memberService.checkEmailExists(email)) {
             throw new CommonException(ErrorCode.EMAIL_NOT_FOUND);
         }
         String authToken = UUID.randomUUID()
@@ -111,7 +111,6 @@ public class AuthService {
     public void resetPassword(PasswdResetRequest passwdResetRequest) {
         String authToken = stringRedisTemplate.opsForValue()
                                               .getAndDelete(passwdResetRequest.email());
-
         if (!Objects.equals(authToken, passwdResetRequest.authToken())) {
             throw new CommonException(ErrorCode.AUTH_TOKEN_INVALID);
         }
