@@ -12,6 +12,9 @@ public enum ErrorCode {
     BAD_REQUEST(40000, HttpStatus.BAD_REQUEST, "잘못된 요청 형식입니다."),
     AUTH_CODE_INVALID(40001, HttpStatus.BAD_REQUEST, "유효하지 않은 인증코드 입니다."),
     AUTH_TOKEN_INVALID(40002, HttpStatus.BAD_REQUEST, "유효하지 않은 인증코드 입니다."),
+    DUPLICATE_NICKNAME(40003, HttpStatus.BAD_REQUEST, "중복된 닉네임 입니다."),
+    FILE_NAME_NOT_EXISTS(40004, HttpStatus.BAD_REQUEST, "파일명이 존재하지 않습니다."),
+    INVALID_FILE_EXTENSION(40005, HttpStatus.BAD_REQUEST, "유효하지 않은 파일 확장자 입니다."),
 
     //401
     UNAUTHORIZED(40100, HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),
@@ -43,7 +46,9 @@ public enum ErrorCode {
 
     // 500
     INTERNAL_SERVER_ERROR(50000, HttpStatus.INTERNAL_SERVER_ERROR, "서버내부 오류입니다."),
-    SEND_EMAIL_FAIL(50001, HttpStatus.INTERNAL_SERVER_ERROR, "이메일 발송을 실패했습니다.");
+    SEND_EMAIL_FAIL(50001, HttpStatus.INTERNAL_SERVER_ERROR, "이메일 발송을 실패했습니다."),
+    SAVE_IMAGE_FAIL(50003, HttpStatus.INTERNAL_SERVER_ERROR, "이미지 저장을 실패했습니다.");
+
 
     private final Integer code;
     private final HttpStatus httpStatus;
