@@ -1,4 +1,4 @@
-package org.kc5.learningmate.api.v1.dto.response;
+package org.kc5.learningmate.api.v1.dto.response.member;
 
 import org.kc5.learningmate.domain.member.entity.Member;
 

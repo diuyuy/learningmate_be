@@ -5,9 +5,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.kc5.learningmate.api.v1.dto.request.auth.*;
-import org.kc5.learningmate.api.v1.dto.response.LoginResult;
-import org.kc5.learningmate.api.v1.dto.response.MemberResponse;
-import org.kc5.learningmate.api.v1.dto.response.TokenResponse;
+import org.kc5.learningmate.api.v1.dto.response.auth.LoginResult;
+import org.kc5.learningmate.api.v1.dto.response.auth.TokenResponse;
+import org.kc5.learningmate.api.v1.dto.response.member.MemberResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.auth.provider.HttpCookieProvider;
 import org.kc5.learningmate.domain.auth.service.AuthService;
@@ -110,7 +110,7 @@ public class AuthController {
     @PatchMapping("/passwd-resets")
     public ResponseEntity<ResultResponse<Void>> resetPasswd(@Valid @RequestBody PasswdResetRequest passwdResetRequest) {
         authService.resetPassword(passwdResetRequest);
-        
+
         return ResponseEntity.ok()
                              .body(new ResultResponse<>(HttpStatus.OK));
     }

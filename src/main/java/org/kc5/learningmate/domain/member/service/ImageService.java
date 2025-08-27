@@ -5,10 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,13 +22,13 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class ImageService {
-    @Value("${file.upload-dir}")
+    @Value("${image.upload-dir}")
     private String uploadDir;
 
-    @Value("${image-prefix}")
+    @Value("${image.image-prefix}")
     private String imagePrefix;
 
-    @Value("${file.allowed-extensions}")
+    @Value("${image.allowed-extensions}")
     private List<String> allowedExtensions;
 
     private Path uploadPath;
@@ -42,7 +45,7 @@ public class ImageService {
     }
 
     public String saveImage(InputStream inputStream, String originalFilename, String oldImgUrl) {
-        log.debug("saveImage 메서드 호출!!!");
+        log.info("saveImage 메서드 호출!!!");
         String filename = Paths.get(originalFilename)
                                .getFileName()
                                .toString();
@@ -54,7 +57,7 @@ public class ImageService {
 
         Path path = uploadPath.resolve(newFilename);
 
-        log.debug("저장할 이미지의 파일 경로: {}", path);
+        log.info("저장할 이미지의 파일 경로: {}", path);
 
         try {
             Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
@@ -69,19 +72,34 @@ public class ImageService {
         }
     }
 
+    public Resource getImage(String imgUrl) {
+        if (imgUrl == null || !imgUrl.startsWith(imagePrefix)) {
+            log.error("이미지 로드를 실패했습니다.");
+            throw new CommonException(ErrorCode.LOAD_IMAGE_FAIL);
+        }
+
+
+        Path path = getFilepathFromUrl(imgUrl);
+        try {
+            Resource resource = new UrlResource(path.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                return resource;
+            }
+            throw new CommonException(ErrorCode.LOAD_IMAGE_FAIL);
+        } catch (MalformedURLException e) {
+            log.error("이미지 리소스 생성 실패.");
+            throw new CommonException(ErrorCode.LOAD_IMAGE_FAIL);
+        }
+
+    }
+
     private void deleteOldImage(String imgUrl) {
-        log.debug("deleteOldImage 호출!!!");
-        if (!imgUrl.startsWith(imagePrefix)) {
+        log.info("deleteOldImage 호출!!!");
+        if (imgUrl == null || !imgUrl.startsWith(imagePrefix)) {
             return;
         }
 
-        String fileNameWithPotentialPath = imgUrl.substring(imagePrefix.length());
-        String filename = Paths.get(fileNameWithPotentialPath)
-                               .getFileName()
-                               .toString();
-
-        log.debug("파일 이름: {}", filename);
-        Path path = this.uploadPath.resolve(filename);
+        Path path = getFilepathFromUrl(imgUrl);
 
         try {
             Files.deleteIfExists(path);
@@ -89,6 +107,15 @@ public class ImageService {
             log.error("프로필 이미지 제거 에러: {}", e.getMessage());
         }
 
+    }
+
+    private Path getFilepathFromUrl(String imgUrl) {
+        String fileNameWithPotentialPath = imgUrl.substring(imagePrefix.length());
+        String filename = Paths.get(fileNameWithPotentialPath)
+                               .getFileName()
+                               .toString();
+        log.info("파일 이름: {}", filename);
+        return this.uploadPath.resolve(filename);
     }
 
     private String extractExtension(String filename) {
