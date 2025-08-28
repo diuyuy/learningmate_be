@@ -68,7 +68,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(Long id, MemberUpdateRequest memberUpdateRequest) {
+    public MemberResponse updateMember(Long id, MemberUpdateRequest memberUpdateRequest) {
         Member member = memberRepository.findById(id)
                                         .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -84,6 +84,8 @@ public class MemberService {
         if (password != null && !password.isEmpty()) {
             member.updatePassword(passwordEncoder.encode(password));
         }
+
+        return MemberResponse.from(member);
     }
 
     @Transactional

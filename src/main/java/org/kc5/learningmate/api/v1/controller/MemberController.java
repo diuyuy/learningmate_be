@@ -42,12 +42,12 @@ public class MemberController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<ResultResponse<Void>> updateMember(@Valid @RequestBody MemberUpdateRequest memberUpdateRequest, @AuthenticationPrincipal MemberDetail memberDetail) {
+    public ResponseEntity<ResultResponse<MemberResponse>> updateMember(@Valid @RequestBody MemberUpdateRequest memberUpdateRequest, @AuthenticationPrincipal MemberDetail memberDetail) {
         Long memberId = memberDetail.getMemberId();
-        memberService.updateMember(memberId, memberUpdateRequest);
+        MemberResponse memberResponse = memberService.updateMember(memberId, memberUpdateRequest);
 
         return ResponseEntity.ok()
-                             .body(new ResultResponse<>(HttpStatus.OK));
+                             .body(new ResultResponse<>(memberResponse));
     }
 
     @PatchMapping("/me/profile-image")
