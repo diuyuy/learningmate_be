@@ -15,6 +15,7 @@ public enum ErrorCode {
     DUPLICATE_NICKNAME(40003, HttpStatus.BAD_REQUEST, "중복된 닉네임 입니다."),
     FILE_NAME_NOT_EXISTS(40004, HttpStatus.BAD_REQUEST, "파일명이 존재하지 않습니다."),
     INVALID_FILE_EXTENSION(40005, HttpStatus.BAD_REQUEST, "유효하지 않은 파일 확장자 입니다."),
+    PROFILE_IMG_TOO_BIG(40006, HttpStatus.BAD_REQUEST, "프로필 이미지의 사이즈는 1MB 보다 작아야 합니다."),
 
     //401
     UNAUTHORIZED(40100, HttpStatus.UNAUTHORIZED, "인증이 필요합니다."),

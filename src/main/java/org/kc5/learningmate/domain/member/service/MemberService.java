@@ -89,7 +89,9 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateImage(Long id, MultipartFile imgFile) {
+    public MemberResponse updateImage(Long id, MultipartFile imgFile) {
+        imageService.validateProfileImgSize(imgFile);
+
         Member member = memberRepository.findById(id)
                                         .orElseThrow(() -> new CommonException(ErrorCode.EMAIL_NOT_FOUND));
 
@@ -97,6 +99,8 @@ public class MemberService {
             String imgUrl = imageService.saveImage(imgFile.getInputStream(), imgFile.getOriginalFilename(), member.getImageUrl());
 
             member.updateImageUrl(imgUrl);
+
+            return MemberResponse.from(member);
         } catch (IOException e) {
             log.error("getInputStream() 호출 실패: {}", e.getMessage());
             throw new CommonException(ErrorCode.INTERNAL_SERVER_ERROR);
