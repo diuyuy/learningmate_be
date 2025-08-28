@@ -10,7 +10,6 @@ import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.member.entity.Member;
 import org.kc5.learningmate.domain.member.repository.MemberRepository;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
@@ -28,9 +27,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageService imageService;
-
-    @Value("${image.default-image-url}")
-    private String defaultImageUrl;
 
     @Transactional
     public void createMember(SignUpRequest signUpRequest) {
@@ -63,12 +59,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileImageDto getProfileImage(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                                        .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
-
-        String imgUrl = (member.getImageUrl() != null) ? member.getImageUrl() : defaultImageUrl;
-        
+    public ProfileImageDto getProfileImage(String imgUrl) {
         Resource resource = imageService.getImage(imgUrl);
         MediaType mediaType = MediaTypeFactory.getMediaType(resource.getFilename())
                                               .orElseThrow(() -> new CommonException(ErrorCode.LOAD_IMAGE_FAIL));
@@ -77,7 +68,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMember(Long id, MemberUpdateRequest memberUpdateRequest) {
+    public MemberResponse updateMember(Long id, MemberUpdateRequest memberUpdateRequest) {
         Member member = memberRepository.findById(id)
                                         .orElseThrow(() -> new CommonException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -93,6 +84,8 @@ public class MemberService {
         if (password != null && !password.isEmpty()) {
             member.updatePassword(passwordEncoder.encode(password));
         }
+
+        return MemberResponse.from(member);
     }
 
     @Transactional
