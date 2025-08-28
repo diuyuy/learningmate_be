@@ -5,6 +5,7 @@ import org.kc5.learningmate.domain.quiz.entity.MemberQuiz;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -28,4 +29,13 @@ public interface MemberQuizRepository extends JpaRepository<MemberQuiz, Long> {
     """)
     boolean existsSolved(Long quizId, Long memberId);
 
+    @Query("""
+        select count(mq)
+        from MemberQuiz mq
+        join mq.quiz q
+        where mq.member.id = :memberId
+          and q.article.id = :articleId
+    """)
+    long countSolvedByArticleAndMember(@Param("articleId") Long articleId,
+                                       @Param("memberId") Long memberId);
 }

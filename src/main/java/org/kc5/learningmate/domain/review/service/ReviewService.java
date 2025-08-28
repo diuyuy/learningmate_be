@@ -15,6 +15,8 @@ import org.kc5.learningmate.domain.member.repository.MemberRepository;
 import org.kc5.learningmate.domain.review.entity.Review;
 import org.kc5.learningmate.domain.review.repository.LikeReviewRepository;
 import org.kc5.learningmate.domain.review.repository.ReviewRepository;
+import org.kc5.learningmate.domain.study.StudyBits;
+import org.kc5.learningmate.domain.study.repository.StudyRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class ReviewService {
     private final MemberRepository memberRepository;
     private final ReviewRepository reviewRepository;
     private final LikeReviewRepository likeReviewRepository;
+    private final StudyRepository studyRepository;
 
     @Transactional
     public void createReview(Long articleId, ReviewCreateRequest request, Long memberId) {
@@ -41,6 +44,9 @@ public class ReviewService {
                                            .orElseThrow(() -> new CommonException(ErrorCode.ARTICLE_NOT_FOUND));
 
         hasWrittenReview(memberId, article.getId());
+
+        Long keywordId = article.getKeyword().getId();
+        studyRepository.upsertFlag(memberId, keywordId, StudyBits.REVIEW);
 
         reviewRepository.save(ReviewCreateRequest.from(request, member, article));
     }
