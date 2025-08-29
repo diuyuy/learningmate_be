@@ -72,4 +72,30 @@ jobs:
             fi
 
 
-            docker run -d --name spring-app -p 8080:8080 ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+            docker run -d --name spring-app -p 8080:8080 \
+              -e SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }} \
+              -e SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
+              -e SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }} \
+              -e SPRING_JPA_HIBERNATE_DDL_AUTO=${{ secrets.SPRING_JPA_HIBERNATE_DDL_AUTO }} \
+              -e SPRING_DATA_REDIS_HOST=${{ secrets.SPRING_DATA_REDIS_HOST }} \
+              -e SPRING_DATA_REDIS_PORT=${{ secrets.SPRING_DATA_REDIS_PORT }} \
+              -e AUTH_SECRET=${{ secrets.AUTH_SECRET }} \
+              -e AUTH_EXPIRATION_MILLS=${{ secrets.AUTH_EXPIRATION_MILLS }} \
+              -e AUTH_SAME_SITE=${{ secrets.AUTH_SAME_SITE }} \
+              -e AUTH_REFRESH_TOKEN_EXPIRATION_DAYS=${{ secrets.AUTH_REFRESH_TOKEN_EXPIRATION_DAYS }} \
+              -e AUTH_BASE_URL=${{ secrets.AUTH_BASE_URL }} \
+              -e AUTH_PASSWD_RESET_URL=${{ secrets.AUTH_PASSWD_RESET_URL }} \
+              -e SPRING_MAIL_HOST=${{ secrets.SPRING_MAIL_HOST }} \
+              -e SPRING_MAIL_PORT=${{ secrets.SPRING_MAIL_PORT }} \
+              -e SPRING_MAIL_USERNAME=${{ secrets.SPRING_MAIL_USERNAME }} \
+              -e SPRING_MAIL_PASSWORD=${{ secrets.SPRING_MAIL_PASSWORD }} \
+              -e SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=${{ secrets.SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH }} \
+              -e SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=${{ secrets.SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE }} \
+              -e IMAGE_UPLOAD_DIR=${{ secrets.IMAGE_UPLOAD_DIR }} \
+              -e IMAGE_ALLOWED_EXTENSIONS=${{ secrets.IMAGE_ALLOWED_EXTENSIONS }} \
+              -e IMAGE_IMAGE_PREFIX=${{ secrets.IMAGE_IMAGE_PREFIX }} \
+              -e IMAGE_MAX_PROFILE_IMG_SIZE=${{ secrets.IMAGE_MAX_PROFILE_IMG_SIZE }} \
+              -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+              -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECERT }} \
+              -e GOOGLE_REDIRECT_URL=${{ secrets.GOOGLE_REDIRECT_URL }} \
+              ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
