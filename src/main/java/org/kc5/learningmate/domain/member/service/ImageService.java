@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,15 +23,14 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class ImageService {
+    @Value("${image.max-profile-img-size}")
+    long maxProfileImgSize;
     @Value("${image.upload-dir}")
     private String uploadDir;
-
     @Value("${image.image-prefix}")
     private String imagePrefix;
-
     @Value("${image.allowed-extensions}")
     private List<String> allowedExtensions;
-
     private Path uploadPath;
 
     @PostConstruct
@@ -91,6 +91,12 @@ public class ImageService {
             throw new CommonException(ErrorCode.LOAD_IMAGE_FAIL);
         }
 
+    }
+
+    public void validateProfileImgSize(MultipartFile file) {
+        if (file.getSize() > maxProfileImgSize) {
+            throw new CommonException(ErrorCode.PROFILE_IMG_TOO_BIG);
+        }
     }
 
     private void deleteOldImage(String imgUrl) {

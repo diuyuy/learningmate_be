@@ -9,7 +9,6 @@ import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.auth.entity.MemberDetail;
 import org.kc5.learningmate.domain.member.service.MemberService;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -51,11 +50,11 @@ public class MemberController {
     }
 
     @PatchMapping("/me/profile-image")
-    public ResponseEntity<ResultResponse<Void>> updateProfileImage(@AuthenticationPrincipal MemberDetail memberDetail, @RequestParam("image") MultipartFile image) {
+    public ResponseEntity<ResultResponse<MemberResponse>> updateProfileImage(@AuthenticationPrincipal MemberDetail memberDetail, @RequestParam("image") MultipartFile image) {
         Long memberId = memberDetail.getMemberId();
-        memberService.updateImage(memberId, image);
+        MemberResponse memberResponse = memberService.updateImage(memberId, image);
 
         return ResponseEntity.ok()
-                             .body(new ResultResponse<>(HttpStatus.OK));
+                             .body(new ResultResponse<>(memberResponse));
     }
 }
