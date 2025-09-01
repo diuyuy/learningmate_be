@@ -18,10 +18,13 @@ import org.kc5.learningmate.domain.review.repository.ReviewRepository;
 import org.kc5.learningmate.domain.study.StudyBits;
 import org.kc5.learningmate.domain.study.repository.StudyRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -166,6 +169,13 @@ public class ReviewService {
     public PageResponse<PageReviewCountResponse> getReviewsByArticleId(Long memberId, Long articleId, Pageable pageable) {
         Page<PageReviewCountResponse> pageReviewCount = reviewRepository.getAllByArticleId(memberId, articleId, pageable);
         return PageResponse.from(pageReviewCount);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PageReviewCountResponse> getHotReviews(Long memberId, LocalDate date) {
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end   = date.plusDays(1).atStartOfDay();
+        return reviewRepository.getHotReviews(memberId, start, end, PageRequest.of(0, 5));
     }
 
 }
