@@ -33,6 +33,9 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
             s.keyword.id,
             s.studyStats,
             0,
+            false,
+            false,
+            false,
             s.createdAt,
             s.updatedAt
         )
