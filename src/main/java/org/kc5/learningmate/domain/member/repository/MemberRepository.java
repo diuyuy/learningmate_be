@@ -3,6 +3,7 @@ package org.kc5.learningmate.domain.member.repository;
 import org.kc5.learningmate.domain.auth.entity.MemberDetail;
 import org.kc5.learningmate.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -26,4 +27,16 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
 
     boolean existsByNickname(String nickname);
+
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Query("""
+               update Member as m
+                 set m.email=concat("deleted_",m.id,now()),
+                     m.nickname=null,
+                     m.passwordHash=null,
+                     m.imageUrl=null,
+                     m.deletedAt=now()
+                 where m.id = :memberId
+            """)
+    void deleteMember(@Param("memberId") Long memberId);
 }
