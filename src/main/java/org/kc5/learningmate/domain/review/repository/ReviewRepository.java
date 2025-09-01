@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -86,4 +87,24 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         )
     Page<PageReviewCountResponse> getAllByArticleId(@Param("memberId") Long memberId, @Param("articleId") Long articleId, Pageable pageable);
 
+
+    @Query(
+            value = """
+                select new org.kc5.learningmate.api.v1.dto.response.review.PageReviewCountResponse(
+                      r.id,
+                      r.createdAt,
+                      r.content1,
+                      r.member.nickname,
+                      r.article.title,
+                      count(lr.id),
+                      case when sum(case when lr.member.id = :memberId then 1 else 0 end) > 0
+                           then true else false end
+                    )
+                from Review r
+                left join LikeReview lr on lr.review = r
+                group by r.id, r.createdAt, r.content1, r.member.nickname, r.article.title
+                order by count(lr.review.id) desc, r.createdAt desc
+              """
+    )
+    List<PageReviewCountResponse> getHotReviews(@Param("memberId") Long memberId, Pageable pageable);
 }

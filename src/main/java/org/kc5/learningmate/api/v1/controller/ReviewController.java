@@ -9,6 +9,7 @@ import org.kc5.learningmate.api.v1.dto.request.review.ReviewUpdateRequest;
 import org.kc5.learningmate.api.v1.dto.response.common.PageResponse;
 import org.kc5.learningmate.api.v1.dto.response.review.LikeReviewResponse;
 import org.kc5.learningmate.api.v1.dto.response.review.MyReviewResponse;
+import org.kc5.learningmate.api.v1.dto.response.review.PageReviewCountResponse;
 import org.kc5.learningmate.api.v1.dto.response.review.PageReviewResponse;
 import org.kc5.learningmate.common.ResultResponse;
 import org.kc5.learningmate.domain.auth.entity.MemberDetail;
@@ -20,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -101,6 +104,13 @@ public class ReviewController {
                                                                                          @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity
                 .ok(new ResultResponse<>(reviewService.getMyReviews(memberDetail.getMemberId(), pageable)));
+    }
+
+    @Operation(summary = "리뷰 핫 목록 조회", description = "좋아요 많은 순으로 리뷰 목록을 조회 합니다.")
+    @GetMapping("/hot-reviews")
+    public ResponseEntity<ResultResponse<List<PageReviewCountResponse>>> getHotReviews(@AuthenticationPrincipal MemberDetail memberDetail) {
+        return ResponseEntity
+                .ok(new ResultResponse<>(reviewService.getHotReviews(memberDetail.getMemberId())));
     }
 
 }
