@@ -26,6 +26,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             value = """
             select new org.kc5.learningmate.api.v1.dto.response.review.PageReviewCountResponse(
                   r.id,
+                  r.article.id,
                   r.createdAt,
                   r.content1,
                   r.member.nickname,
@@ -67,6 +68,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         value = """
             select new org.kc5.learningmate.api.v1.dto.response.review.PageReviewCountResponse(
                   r.id,
+                  r.article.id,
                   r.createdAt,
                   r.content1,
                   r.member.nickname,
@@ -93,6 +95,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             value = """
                 select new org.kc5.learningmate.api.v1.dto.response.review.PageReviewCountResponse(
                       r.id,
+                      r.article.id,
                       r.createdAt,
                       r.content1,
                       r.member.nickname,
