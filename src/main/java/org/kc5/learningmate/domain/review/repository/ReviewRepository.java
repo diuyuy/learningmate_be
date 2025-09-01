@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,9 +103,12 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
                     )
                 from Review r
                 left join LikeReview lr on lr.review = r
+                where r.createdAt >= :start and r.createdAt < :end
                 group by r.id, r.createdAt, r.content1, r.member.nickname, r.article.title
                 order by count(lr.review.id) desc, r.createdAt desc
               """
     )
-    List<PageReviewCountResponse> getHotReviews(@Param("memberId") Long memberId, Pageable pageable);
+    List<PageReviewCountResponse> getHotReviews(@Param("memberId") Long memberId,
+                                                @Param("start") LocalDateTime start,
+                                                @Param("end") LocalDateTime end, Pageable pageable);
 }

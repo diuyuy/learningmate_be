@@ -17,11 +17,13 @@ import org.kc5.learningmate.domain.review.service.ReviewService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequestMapping("/api/v1")
@@ -106,11 +108,12 @@ public class ReviewController {
                 .ok(new ResultResponse<>(reviewService.getMyReviews(memberDetail.getMemberId(), pageable)));
     }
 
-    @Operation(summary = "리뷰 핫 목록 조회", description = "좋아요 많은 순으로 리뷰 목록을 조회 합니다.")
+    @Operation(summary = "리뷰 핫 목록 조회", description = "좋아요 많은 순으로 TOP 5 리뷰 목록을 조회 합니다.")
     @GetMapping("/hot-reviews")
-    public ResponseEntity<ResultResponse<List<PageReviewCountResponse>>> getHotReviews(@AuthenticationPrincipal MemberDetail memberDetail) {
+    public ResponseEntity<ResultResponse<List<PageReviewCountResponse>>> getHotReviews(@AuthenticationPrincipal MemberDetail memberDetail,
+                                                                                       @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return ResponseEntity
-                .ok(new ResultResponse<>(reviewService.getHotReviews(memberDetail.getMemberId())));
+                .ok(new ResultResponse<>(reviewService.getHotReviews(memberDetail.getMemberId(), date)));
     }
 
 }

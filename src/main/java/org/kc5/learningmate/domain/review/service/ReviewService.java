@@ -23,6 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -170,8 +172,10 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public List<PageReviewCountResponse> getHotReviews(Long memberId) {
-        return reviewRepository.getHotReviews(memberId, PageRequest.of(0, 5));
+    public List<PageReviewCountResponse> getHotReviews(Long memberId, LocalDate date) {
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end   = date.plusDays(1).atStartOfDay();
+        return reviewRepository.getHotReviews(memberId, start, end, PageRequest.of(0, 5));
     }
 
 }
