@@ -59,7 +59,7 @@ jobs:
             cd /home/ec2-user/workspace/learningmate
 
             # SSM 파라미터를 가져오는 부분은 EC2 인스턴스 역할의 권한으로 실행되므로 변경이 필요 없습니다.
-            aws ssm get-parameters-by-path --path "/learningmate/prod/" --with-decryption --query 'Parameters[*].[Name,Value]' --output text \
+            aws ssm get-parameters-by-path --path "/learningmate/prod/" --with-decryption --query 'Parameters[*].[Name,Value]' --output text |\
               while read -r name value; do \
               echo "${name##*/}=$value"; \
               done > .env
