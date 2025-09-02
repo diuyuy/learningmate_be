@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 public record PageReviewCountResponse(
         Long id,
         Long articleId,
+        Long memberId,
         LocalDateTime createdAt,
         String content1,
         String nickname,
