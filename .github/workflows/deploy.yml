@@ -54,7 +54,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          envs: IMAGE_URI=${{ steps.build-image.outputs.image }}
+          # envs: IMAGE_URI=${{ steps.build-image.outputs.image }}
           script: |
             cd /home/ec2-user/workspace/learningmate
 
@@ -66,6 +66,8 @@ jobs:
 
             # ECR 로그인
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+
+            export IMAGE_UIL=${{ steps.build-image.outputs.image }}
 
             docker-compose down
             docker-compose pull
