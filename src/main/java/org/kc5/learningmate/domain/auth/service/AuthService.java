@@ -103,18 +103,18 @@ public class AuthService {
         String authToken = UUID.randomUUID()
                                .toString();
         stringRedisTemplate.opsForValue()
-                           .set(email, authToken, 10, TimeUnit.MINUTES);
+                           .set(authToken, email, 10, TimeUnit.MINUTES);
 
         emailService.sendResetPasswdMail(email, authToken);
     }
 
     public void resetPassword(PasswdResetRequest passwdResetRequest) {
-        String authToken = stringRedisTemplate.opsForValue()
-                                              .getAndDelete(passwdResetRequest.email());
-        if (!Objects.equals(authToken, passwdResetRequest.authToken())) {
+        String email = stringRedisTemplate.opsForValue()
+                                          .getAndDelete(passwdResetRequest.authToken());
+        if (email == null) {
             throw new CommonException(ErrorCode.AUTH_TOKEN_INVALID);
         }
 
-        memberService.updatePassword(passwdResetRequest.email(), passwdResetRequest.password());
+        memberService.updatePassword(email, passwdResetRequest.password());
     }
 }
