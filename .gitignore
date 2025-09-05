@@ -37,3 +37,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+.env
+compose.yaml
+docker-compose.yml

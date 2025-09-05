@@ -30,7 +30,6 @@ public class EmailService {
     public void sendResetPasswdMail(String to, String authToken) {
         String redirectUrl = UriComponentsBuilder.fromUriString(authProperties.getBaseUrl())
                                                  .path(authProperties.getPasswdResetUrl())
-                                                 .queryParam("email", to)
                                                  .queryParam("authToken", authToken)
                                                  .build()
                                                  .toUriString();
