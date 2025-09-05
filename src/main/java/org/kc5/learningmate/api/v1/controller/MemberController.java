@@ -14,7 +14,9 @@ import org.kc5.learningmate.domain.auth.provider.HttpCookieProvider;
 import org.kc5.learningmate.domain.member.service.MemberService;
 import org.kc5.learningmate.domain.study.service.StudyService;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -85,7 +87,14 @@ public class MemberController {
         String refreshToken = httpCookieProvider.getRefreshToken(request);
         memberService.deleteMember(memberId, refreshToken);
 
+        ResponseCookie signOutAccessTokenCookie = httpCookieProvider.createSignOutCookie("accessToken");
+
+        ResponseCookie signOutRefreshTokenCookie = httpCookieProvider.createSignOutCookie("refreshToken");
+
         return ResponseEntity.ok()
+                             .header(HttpHeaders.SET_COOKIE, signOutAccessTokenCookie.toString())
+                             .header(HttpHeaders.SET_COOKIE, signOutRefreshTokenCookie.toString())
                              .body(new ResultResponse<>(HttpStatus.OK));
+
     }
 }
