@@ -9,6 +9,7 @@ import org.kc5.learningmate.domain.auth.provider.HttpCookieProvider;
 import org.kc5.learningmate.domain.auth.provider.JwtTokenProvider;
 import org.kc5.learningmate.domain.auth.service.RefreshTokenService;
 import org.kc5.learningmate.domain.member.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -24,6 +25,9 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
     private final MemberRepository memberRepository;
     private final HttpCookieProvider httpCookieProvider;
     private final RefreshTokenService refreshTokenService;
+
+    @Value("${auth.base-url}")
+    private String baseUrl;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
@@ -44,6 +48,6 @@ public class Oauth2SuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader("Set-Cookie", accessTokenCookie.toString());
         response.addHeader("Set-Cookie", refreshTokenCookie.toString());
 
-        response.sendRedirect("http://localhost:5173/oauth-redirect");
+        response.sendRedirect(baseUrl+ "/oauth-redirect");
     }
 }

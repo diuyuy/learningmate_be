@@ -2,7 +2,7 @@ name: CI/CD with Docker, ECR and EC2
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
 
 # OIDC 토큰을 요청하기 위한 권한을 추가합니다.
 permissions:
