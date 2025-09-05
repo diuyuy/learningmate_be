@@ -18,7 +18,7 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query(value =
             """ 
-            INSERT INTO study
+            INSERT INTO Study
             (member_id, keyword_id, study_stats, created_at, updated_at) 
             VALUES 
             (:memberId, :keywordId, :flag, NOW(6), NOW(6)) 
