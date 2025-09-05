@@ -7,10 +7,6 @@ build/
 
 src/main/resources/application-*
 
-.env*
-
-compose.yaml
-
 ### STS ###
 .apt_generated
 .classpath
