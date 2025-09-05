@@ -23,7 +23,7 @@ public interface StudyRepository extends JpaRepository<Study, Long> {
             VALUES 
             (:memberId, :keywordId, :flag, NOW(6), NOW(6)) 
             ON DUPLICATE KEY UPDATE 
-            study_stats = study.study_stats | VALUES(study_stats), updated_at = NOW(6) 
+            study_stats = Study.study_stats | VALUES(study_stats), updated_at = NOW(6) 
             """, nativeQuery = true)
     void upsertFlag(@Param("memberId") Long memberId, @Param("keywordId") Long keywordId, @Param("flag") int flag);
 
