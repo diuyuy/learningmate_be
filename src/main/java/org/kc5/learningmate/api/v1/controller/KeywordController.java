@@ -71,7 +71,6 @@ public class KeywordController {
     public ResponseEntity<ResultResponse<Void>> findReviewsByKeywordId(@PathVariable Long keywordId,
                                                                         @AuthenticationPrincipal MemberDetail memberDetail) {
 
-        System.out.println(memberDetail.getMemberId());
         videoService.upsertFlag(keywordId, memberDetail.getMemberId());
         return ResponseEntity.ok()
                 .body(new ResultResponse<>());
