@@ -6,6 +6,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.kc5.learningmate.common.exception.CommonException;
 import org.kc5.learningmate.common.exception.ErrorCode;
 import org.kc5.learningmate.domain.auth.provider.JwtTokenProvider;
@@ -20,15 +21,16 @@ import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println("do auth FilterInternal: ");
+        log.info("do auth FilterInternal: ");
 
         String requestURI = request.getRequestURI();
-        System.out.println("requestURI: " + requestURI);
+        log.info("requestURL: {}", requestURI);
         // 2. 현재 요청이 제외할 URI에 해당하는지 확인합니다.
         if (requestURI.startsWith("/api/v1/auth")) {
             filterChain.doFilter(request, response);
